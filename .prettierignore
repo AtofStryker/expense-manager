@@ -15,3 +15,6 @@ cypress/screenshots
 .vscode
 .now
 serviceAccount.json
+
+# Additional ignored files
+/public

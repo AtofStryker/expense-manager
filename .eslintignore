@@ -19,3 +19,4 @@ serviceAccount.json
 # Additional ignored files
 package.json
 tsconfig.json
+/public
