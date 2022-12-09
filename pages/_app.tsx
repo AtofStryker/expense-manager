@@ -18,7 +18,7 @@ import theme from '../lib/theme'
 
 const store = configureStore()
 
-const ComponentWithCorrectScreen: React.FC = ({ children }) => {
+const ComponentWithCorrectScreen = ({ children }) => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(setCurrentScreen(Router.pathname.substring(1) as ScreenTitle))

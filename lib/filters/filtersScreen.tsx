@@ -25,7 +25,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import ConfirmDialog from '../components/confirmDialog'
 import Loading from '../components/loading'
 import PageWrapper from '../components/pageWrapper'
-import { createErrorNotification, withErrorHandler } from '../shared/actions'
+import { createErrorNotification, setSnackbarNotification, withErrorHandler } from '../shared/actions'
 import { DOWNLOADING_DATA_ERROR } from '../shared/constants'
 import { currentUserIdSel, firebaseLoadedSel } from '../shared/selectors'
 
@@ -82,7 +82,7 @@ const FilterFiles = () => {
       const data = await withErrorHandler(DOWNLOADING_DATA_ERROR, dispatch, () => listFiltersForUser(userId!))
 
       if (!data) return
-      else if (typeof data === 'string') dispatch(createErrorNotification(data))
+      else if (typeof data === 'string') dispatch(setSnackbarNotification(createErrorNotification(data)))
       else {
         setListItems(data.map((str) => ({ filename: str, checked: false })))
       }

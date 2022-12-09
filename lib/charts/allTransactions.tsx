@@ -94,7 +94,6 @@ const AllTransactions = ({ width, height }: Props) => {
       height={height}
       data={{ name: 'root', children: data }}
       margin={{ top: 30, right: 0, bottom: 30, left: 0 }}
-      identity="name"
       value="amount"
       cornerRadius={2}
       borderWidth={1}
@@ -102,8 +101,6 @@ const AllTransactions = ({ width, height }: Props) => {
       colors={{ scheme: 'nivo' }}
       childColor={{ from: 'color' }}
       animate
-      motionStiffness={90}
-      motionDamping={15}
       isInteractive
     />
   )

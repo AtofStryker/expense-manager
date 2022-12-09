@@ -15,6 +15,7 @@ const useStyles = makeStyles({
 
 export interface ProfileSectionProps {
   name: string
+  children: React.ReactNode
 }
 
 const ProfileSection: React.FunctionComponent<ProfileSectionProps> = (props) => {
