@@ -1,4 +1,4 @@
-import { fpSet, pipe, set } from '@siegrift/tsfunct'
+import { set } from '@siegrift/tsfunct'
 import { addDays, isBefore, parse } from 'date-fns'
 import zip from 'lodash/zip'
 import { batch } from 'react-redux'
@@ -17,7 +17,7 @@ import {
 import { getInitialState as getInitialProfileState } from '../profile/state'
 import { Action, Thunk } from '../redux/types'
 import { withErrorHandler } from '../shared/actions'
-import { SignInStatus, State } from '../state'
+import { SignInStatus } from '../state'
 
 import { FirestoneQuery, getQueries } from './firestoneQueries'
 
@@ -36,7 +36,7 @@ export const firestoneChangeAction = (
 const changeSignInStatus = (status: SignInStatus, user: firebase.User | null): Action<SignInStatus> => ({
   type: 'Change sign in status and set user',
   payload: status,
-  reducer: (state) => pipe(fpSet<State>()(['signInStatus'], status), fpSet<State>()(['user'], user))(state),
+  reducer: (state) => ({ ...state, signInStatus: status, user }),
 })
 
 export const authChangeAction =

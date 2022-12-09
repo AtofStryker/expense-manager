@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { fpSet, fpUpdate, get, omit, pipe, set } from '@siegrift/tsfunct'
+import { get, omit, set } from '@siegrift/tsfunct'
 import difference from 'lodash/difference'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -99,15 +99,14 @@ const AddTransaction = () => {
               : (id) => {
                   setAddTx((currAddTx) => {
                     const newTagIds = [...get(currAddTx, ['tagIds']), id]
-                    return pipe(
-                      fpSet<typeof currAddTx>()(['tagIds'], newTagIds),
-                      fpUpdate<typeof currAddTx>()(['amount'], (am) =>
-                        maybeApplyDefaultAmount(
-                          newTagIds.map((i) => allTags[i]),
-                          am
-                        )
-                      )
-                    )(currAddTx)
+                    return {
+                      ...currAddTx,
+                      tagIds: newTagIds,
+                      amount: maybeApplyDefaultAmount(
+                        newTagIds.map((i) => allTags[i]),
+                        currAddTx.amount
+                      ),
+                    }
                   })
                 },
           onCreateTag:

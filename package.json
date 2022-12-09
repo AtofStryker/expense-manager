@@ -38,7 +38,7 @@
     "@nivo/line": "^0.74.0",
     "@nivo/pie": "^0.74.0",
     "@nivo/sunburst": "^0.74.0",
-    "@siegrift/tsfunct": "^1.6.0",
+    "@siegrift/tsfunct": "^2.0.4",
     "@types/js-beautify": "^1.13.3",
     "@visx/responsive": "^2.4.1",
     "classnames": "^2.3.1",
