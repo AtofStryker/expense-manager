@@ -81,5 +81,6 @@ module.exports = {
     '@typescript-eslint/require-await': 'off',
     // TODO: Enable once the redux-thunk types are properly typed
     '@typescript-eslint/await-thenable': 'off',
+    '@typescript-eslint/no-misused-promises': 'off',
   },
 }

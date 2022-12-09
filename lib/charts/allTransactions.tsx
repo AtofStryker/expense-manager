@@ -53,7 +53,7 @@ const createRecData = (
       return
     }
 
-    const newTxs = []
+    const newTxs: Transaction[] = []
     for (const tx of txSet) {
       if (tx.tagIds.includes(tag.id)) {
         newTxs.push(tx)

@@ -14,6 +14,8 @@
     "jsx": "preserve",
     "strict": true,
     "noImplicitReturns": true,
+    // TODO: Remove once we are done with dependency updates
+    "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
     "types": ["node", "jest"],
     "rootDirs": ["lib", "pages"],

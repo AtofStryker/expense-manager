@@ -32,6 +32,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^4.0.0-alpha.11",
+    "@material-ui/styles": "^4.11.5",
     "@monaco-editor/react": "^4.3.1",
     "@nivo/core": "^0.74.0",
     "@nivo/line": "^0.74.0",

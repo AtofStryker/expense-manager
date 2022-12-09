@@ -153,7 +153,7 @@ const AmountField = ({
           onKeyDown={(e) => {
             if (e.key === 'Enter') onPressEnter(e)
           }}
-          transactionType={type!}
+          transactionType={type}
         />
       </FormControl>
     </>

@@ -5,6 +5,7 @@ specifiers:
   '@material-ui/icons': ^4.11.2
   '@material-ui/lab': ^4.0.0-alpha.56
   '@material-ui/pickers': ^4.0.0-alpha.11
+  '@material-ui/styles': ^4.11.5
   '@monaco-editor/react': ^4.3.1
   '@next/bundle-analyzer': ^12.0.4
   '@nivo/core': ^0.74.0
@@ -80,6 +81,7 @@ dependencies:
   '@material-ui/icons': 4.11.3_5ywzebzghivvobqcm5a7bi6ptu
   '@material-ui/lab': 4.0.0-alpha.61_5ywzebzghivvobqcm5a7bi6ptu
   '@material-ui/pickers': 4.0.0-alpha.12_bvocwdyeuhfkasceasjiw4befe
+  '@material-ui/styles': 4.11.5_gzv7pa6nrbev3fs6gyzn7sadkq
   '@monaco-editor/react': 4.4.6_sfoxds7t5ydpegc3knd667wn6m
   '@nivo/core': 0.74.1_sfoxds7t5ydpegc3knd667wn6m
   '@nivo/line': 0.74.1_dpcc46t7v2mo4vzk2lcyswiurm
