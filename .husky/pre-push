@@ -2,4 +2,4 @@
 . "$(dirname "$0")/_/husky.sh"
 
 # We are not running TS build nor e2e tests for performance reasons
-yarn lint && yarn test:unit
+pnpm run lint && pnpm run test:unit

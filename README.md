@@ -2,15 +2,15 @@
 
 [![Continuous Build](https://github.com/Siegrift/expense-manager/actions/workflows/main.yml/badge.svg)](https://github.com/Siegrift/expense-manager/actions/workflows/main.yml)
 
-A hobby project for tracking expenses and much more. Built mainly for my personal usage, but its open for everyone. The
-transaction data lives on my firebase project and is **not** encrypted. If you have problems with this, consider
-deploying your own fork with a custom firebase instance.
+A hobby project for tracking expenses and analyzing spendings. Transaction data is persisted on firebase server and is
+**not** encrypted. If you have problems with this, consider forking and host using a custom firebase and separate Vercel
+account.
 
 ## Run
 
 1. Follow the [initial setup](#initial-setup) (needed only once)
-2. Run `yarn dev`
-3. (Optional) Run tests - `yarn test:unit:watch` and `yarn test:e2e:open`
+2. Run `pnpm run dev`
+3. (Optional) Run tests - `pnpm run test:unit:watch` and `pnpm run test:e2e:open`
 
 ## Initial setup
 
@@ -22,8 +22,8 @@ deploying your own fork with a custom firebase instance.
 4. Create a `serviceAccount.json` - This file is needed for e2e tests. Follow
    [cypress-firebase setup](https://github.com/prescottprue/cypress-firebase#setup) for information on how to obtain it
    (only download the service account - no additional setup is required).
-5. Install `node` and `yarn` - Use node version >=16.
-6. Run `yarn` - Which downloads all the dependencies.
+5. Install `node` and `pnpm`. See package.json for supported versions.
+6. Run `pnpm install` to install project dependencies.
 
 ### Create a new firebase instance
 
@@ -54,7 +54,7 @@ log in.
 2. Create new Firebase project according to Firebase integration section
 3. Create `.env-prod` file with the same constants names as in `.env-template` and set Firebase constants to specific
    values from your Firebase project
-4. Run `yarn deploy`
+4. Run `pnpm run deploy`
 
 ## Contribution
 

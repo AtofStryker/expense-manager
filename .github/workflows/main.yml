@@ -13,39 +13,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone expense-manager
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
+          cache: 'pnpm'
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install
       - name: Run linter
-        run: yarn lint
+        run: pnpm run lint
       - name: Run prettier
-        run: yarn prettier
+        run: pnpm run prettier
       - name: Run TypeScript
-        run: yarn typescript
+        run: pnpm run typescript
 
   unit-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Clone expense-manager
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
+          cache: 'pnpm'
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install
       - name: Run unit tests
-        run: yarn test:unit
+        run: pnpm run test:unit
 
   cypress:
     runs-on: ubuntu-latest
     steps:
       - name: Clone expense-manager
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Create .env-dev
         env:
           ENV_SECRETS: ${{ secrets.ENV_SECRETS }}
@@ -59,8 +61,8 @@ jobs:
       - name: Run cypress tests
         uses: cypress-io/github-action@v2
         with:
-          build: yarn test:e2e:ci:build-app
-          start: yarn test:e2e:ci:start-app
+          build: pnpm test:e2e:ci:build-app
+          start: pnpm test:e2e:ci:start-app
           wait-on: 'http://localhost:3000'
           record: true
         env:

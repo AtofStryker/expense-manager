@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "analyze": "cross-env ANALYZE=true yarn build",
+    "analyze": "cross-env ANALYZE=true pnpm run build",
     "build": "next build",
-    "deploy": "yarn build && vercel --prod",
+    "deploy": "pnpm run build && vercel --prod",
     "dev": "cross-env NODE_OPTIONS=--max_old_space_size=8192 next dev",
-    "lint:fix": "yarn lint --fix",
-    "lint": "yarn eslint --ext js,ts,tsx . --max-warnings 0",
+    "lint:fix": "pnpm run lint --fix",
+    "lint": "eslint --ext js,ts,tsx . --max-warnings 0",
     "prettier:fix:quick": "pretty-quick --staged",
     "prettier:fix": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "prettier": "prettier --check \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
@@ -16,12 +16,16 @@
     "test:e2e:run": "cypress run",
     "test:e2e:ci:build-app": "cross-env ENVIRONMENT=development next build",
     "test:e2e:ci:start-app": "cross-env ENVIRONMENT=development next start",
-    "test:unit:watch": "yarn test:unit --watch",
+    "test:unit:watch": "pnpm run test:unit --watch",
     "test:unit": "jest --runInBand",
-    "test": "yarn typescript && yarn test:unit && yarn test:e2e",
+    "test": "pnpm run typescript && pnpm run test:unit && pnpm run test:e2e",
     "typescript:watch": "tsc -p . --watch",
     "typescript": "tsc -p .",
     "prepare": "husky install"
+  },
+  "engines": {
+    "node": "18.x",
+    "pnpm": "7.18.x"
   },
   "dependencies": {
     "@material-ui/core": "^4.12.3",
