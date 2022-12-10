@@ -71,18 +71,14 @@ jobs:
         # This seems to be the easiest way: https://stackoverflow.com/a/64452700/7227455
         run: echo $SERVICE_ACCOUNT | base64 -d > serviceAccount.json
       - name: Run cypress tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           build: pnpm test:e2e:ci:build-app
           start: pnpm test:e2e:ci:start-app
           wait-on: 'http://localhost:3000'
+          # Unfortunately, videos do not work on the default GitHub actions runner. See:
+          # https://github.com/cypress-io/cypress/issues/19488
           record: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload videos
-        uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: cypress-videos
-          path: cypress/videos

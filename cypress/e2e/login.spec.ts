@@ -3,7 +3,7 @@ describe('login', () => {
     cy.firebaseLogin()
 
     cy.visit('/')
-    cy.location('pathname').should('equal', '/add')
+    cy.location('pathname').should('equal', '/')
     cy.findByText('Add transaction')
   })
 

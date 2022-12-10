@@ -12,6 +12,7 @@
     ".eslintrc.base.js",
     ".eslintrc.js",
     "jest.config.js",
-    "next.config.js"
+    "next.config.js",
+    "cypress.config.ts"
   ]
 }

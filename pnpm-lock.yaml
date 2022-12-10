@@ -33,7 +33,7 @@ specifiers:
   '@visx/responsive': ^2.4.1
   classnames: ^2.3.1
   cross-env: ^7.0.3
-  cypress: ^9.2.0
+  cypress: ^12.0.2
   cypress-firebase: ^2.0.0
   cypress-plugin-tab: ^1.0.5
   cypress-testing-library: ^4.0.0
@@ -119,7 +119,7 @@ dependencies:
 
 devDependencies:
   '@next/bundle-analyzer': 13.0.6
-  '@testing-library/cypress': 8.0.7_cypress@9.7.0
+  '@testing-library/cypress': 8.0.7_cypress@12.0.2
   '@types/cypress': 1.1.3
   '@types/jest': 27.5.2
   '@types/lodash': 4.14.191
@@ -136,7 +136,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.46.0_5mle7isnkfgjmrghnnczirv6iy
   '@typescript-eslint/parser': 5.46.0_ha6vam6werchizxrnqvarmz2zu
   cross-env: 7.0.3
-  cypress: 9.7.0
+  cypress: 12.0.2
   cypress-firebase: 2.2.2_firebase-admin@9.12.0
   cypress-plugin-tab: 1.0.5
   cypress-testing-library: 4.0.0
@@ -2872,7 +2872,7 @@ packages:
     dependencies:
       tslib: 2.4.1
 
-  /@testing-library/cypress/8.0.7_cypress@9.7.0:
+  /@testing-library/cypress/8.0.7_cypress@12.0.2:
     resolution: {integrity: sha512-3HTV725rOS+YHve/gD9coZp/UcPK5xhr4H0GMnq/ni6USdtzVtSOG9WBFtd8rYnrXk8rrGD+0toRFYouJNIG0Q==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
@@ -2880,7 +2880,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.20.6
       '@testing-library/dom': 8.19.0
-      cypress: 9.7.0
+      cypress: 12.0.2
     dev: true
 
   /@testing-library/dom/8.19.0:
@@ -2955,7 +2955,7 @@ packages:
     resolution: {integrity: sha512-OXe0Gw8LeCflkG1oPgFpyrYWJmEKqYncBsD/J0r17r0ETx/TnIGDNLwXt/pFYSYuYTpzcq1q3g62M9DrfsBL4g==}
     deprecated: This is a stub types definition for cypress (https://cypress.io). cypress provides its own type definitions, so you don't need @types/cypress installed!
     dependencies:
-      cypress: 9.7.0
+      cypress: 12.0.2
     dev: true
 
   /@types/estree/0.0.39:
@@ -4159,9 +4159,9 @@ packages:
     deprecated: '🚨  cypress-testing-library has moved to @testing-library/cypress. Please uninstall cypress-testing-library and install @testing-library/cypress instead, or use an older version of cypress-testing-library. Learn more about this change here: https://github.com/testing-library/dom-testing-library/issues/260 Thanks! :)'
     dev: true
 
-  /cypress/9.7.0:
-    resolution: {integrity: sha512-+1EE1nuuuwIt/N1KXRR2iWHU+OiIt7H28jJDyyI4tiUftId/DrXYEwoDa5+kH2pki1zxnA0r6HrUGHV5eLbF5Q==}
-    engines: {node: '>=12.0.0'}
+  /cypress/12.0.2:
+    resolution: {integrity: sha512-WnLx1DpnbF1vbpDBkgP14rK5yS3U+Gvxrv2fsB4Owma26oIyENj7DDRnsJbSZuTfG4mcuUJxAkRHJR2wBqBfMA==}
+    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
     hasBin: true
     requiresBuild: true
     dependencies:
@@ -4184,7 +4184,7 @@ packages:
       dayjs: 1.11.7
       debug: 4.3.4_supports-color@8.1.1
       enquirer: 2.3.6
-      eventemitter2: 6.4.9
+      eventemitter2: 6.4.7
       execa: 4.1.0
       executable: 4.1.1
       extract-zip: 2.0.1_supports-color@8.1.1
@@ -4950,8 +4950,8 @@ packages:
     engines: {node: '>=6'}
     optional: true
 
-  /eventemitter2/6.4.9:
-    resolution: {integrity: sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg==}
+  /eventemitter2/6.4.7:
+    resolution: {integrity: sha512-tYUSVOGeQPKt/eC1ABfhHy5Xd96N3oIijJvN3O9+TsC28T5V9yX9oEfEK5faP0EFSNVOG97qtAS68GBrQB2hDg==}
     dev: true
 
   /execa/4.1.0:
