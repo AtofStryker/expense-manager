@@ -27,7 +27,7 @@ specifiers:
   '@types/react-virtualized-auto-sizer': ^1.0.1
   '@types/react-window': ^1.8.5
   '@types/redux-logger': ^3.0.9
-  '@types/uuid': ^8.3.3
+  '@types/uuid': ^9.0.0
   '@typescript-eslint/eslint-plugin': ^5.4.0
   '@typescript-eslint/parser': ^5.4.0
   '@visx/responsive': ^2.4.1
@@ -74,7 +74,7 @@ specifiers:
   ts-jest: ^27.0.7
   typescript: ^4.9.4
   url-loader: ^4.1.1
-  uuid: ^8.3.2
+  uuid: ^9.0.0
   vercel: ^28.8.0
 
 dependencies:
@@ -116,7 +116,7 @@ dependencies:
   redux-thunk: 2.4.2_redux@4.2.0
   reselect: 4.1.7
   url-loader: 4.1.1
-  uuid: 8.3.2
+  uuid: 9.0.0
 
 devDependencies:
   '@next/bundle-analyzer': 13.0.6
@@ -133,7 +133,7 @@ devDependencies:
   '@types/react-virtualized-auto-sizer': 1.0.1
   '@types/react-window': 1.8.5
   '@types/redux-logger': 3.0.9
-  '@types/uuid': 8.3.4
+  '@types/uuid': 9.0.0
   '@typescript-eslint/eslint-plugin': 5.46.0_5mle7isnkfgjmrghnnczirv6iy
   '@typescript-eslint/parser': 5.46.0_ha6vam6werchizxrnqvarmz2zu
   cross-env: 7.0.3
@@ -3241,8 +3241,8 @@ packages:
     resolution: {integrity: sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==}
     dev: false
 
-  /@types/uuid/8.3.4:
-    resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
+  /@types/uuid/9.0.0:
+    resolution: {integrity: sha512-kr90f+ERiQtKWMz5rP32ltJ/BtULDI5RVO0uavn1HQUOwjx0R1h0rnDYNL0CepF1zL5bSY6FISAfd9tOdDhU5Q==}
     dev: true
 
   /@types/yargs-parser/21.0.0:
@@ -9849,6 +9849,11 @@ packages:
   /uuid/8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
+
+  /uuid/9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
+    dev: false
 
   /v8-to-istanbul/8.1.1:
     resolution: {integrity: sha512-FGtKtv3xIpR6BYhvgH8MI/y78oT7d8Au3ww4QIxymrCtZEh5b8gCw2siywE+puhEmuWKDtmfrvF5UlB298ut3w==}
