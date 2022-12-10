@@ -22,6 +22,6 @@
     "outDir": "build/lib",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "lib", "pages"],
+  "include": ["next-env.d.ts", "lib", "pages", "middleware.tsx"],
   "exclude": ["node_modules"]
 }

@@ -4,6 +4,11 @@ import { NextResponse, NextRequest } from 'next/server'
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  if (pathname == '/') return NextResponse.redirect('/add')
+  if (pathname == '/') {
+    // See: https://nextjs.org/docs/messages/middleware-relative-urls
+    const url = req.nextUrl.clone()
+    url.pathname = '/add'
+    return NextResponse.rewrite(url)
+  }
   return NextResponse.next()
 }

@@ -6,12 +6,12 @@
     "next-env.d.ts",
     "lib",
     "pages",
+    "middleware.tsx",
 
     // These are the eslint-only inclusions
     ".eslintrc.base.js",
     ".eslintrc.js",
     "jest.config.js",
-    "load-env.js",
     "next.config.js"
   ]
 }
