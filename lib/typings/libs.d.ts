@@ -1,7 +1,5 @@
 declare module '@nivo/sunburst'
 
-declare module 'mathjs-expression-parser'
-
 declare module 'firebase-mock'
 
 // See: https://github.com/reduxjs/redux-thunk/issues/333#issuecomment-1109308664

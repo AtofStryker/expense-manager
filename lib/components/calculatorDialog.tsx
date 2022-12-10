@@ -5,9 +5,11 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import TextField from '@material-ui/core/TextField'
-import math from 'mathjs-expression-parser'
+import { create as createMath, all as allMathFunctions } from 'mathjs'
 
 import { round } from '../shared/utils'
+
+const math = createMath(allMathFunctions)
 
 interface CalculatorDialogProps {
   setShowCalc: (open: boolean) => void
@@ -26,7 +28,7 @@ const CalculatorDialog = ({
 }: CalculatorDialogProps) => {
   let exprResult: number | null
   try {
-    exprResult = math.eval(calcExpression)
+    exprResult = math.evaluate(calcExpression)
   } catch {
     exprResult = null
   }
