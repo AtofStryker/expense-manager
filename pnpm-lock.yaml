@@ -64,7 +64,7 @@ specifiers:
   react-google-button: ^0.7.2
   react-highlight.js: ^1.0.7
   react-icons: ^4.3.1
-  react-number-format: ^4.8.0
+  react-number-format: ^5.1.2
   react-redux: ^8.0.5
   react-virtualized-auto-sizer: ^1.0.6
   react-window: ^1.8.6
@@ -106,7 +106,7 @@ dependencies:
   react-google-button: 0.7.2_react@18.2.0
   react-highlight.js: 1.0.7_biqbaboplfbrettd7655fr4n2y
   react-icons: 4.7.1_react@18.2.0
-  react-number-format: 4.9.4_biqbaboplfbrettd7655fr4n2y
+  react-number-format: 5.1.2_biqbaboplfbrettd7655fr4n2y
   react-redux: 8.0.5_6fpxtwwxc52cyvwzdgczt4jvpq
   react-virtualized-auto-sizer: 1.0.7_biqbaboplfbrettd7655fr4n2y
   react-window: 1.8.8_biqbaboplfbrettd7655fr4n2y
@@ -8435,11 +8435,11 @@ packages:
     resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
     dev: false
 
-  /react-number-format/4.9.4_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-Gq20Z3ugqPLFgeaidnx5on9cNpbQZntPN3QgNAL/WJrNNlQnNznY0LCx7g8xtssmRBw0/hw+SCqw6zAcajooiA==}
+  /react-number-format/5.1.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-NXm/MvZVjmPqrFbjAut/prCyBZ+pA+O+C12rDkWZrwS3JXz1J42RC1kpclkdnkx2KDjRCNFLb21FlwGcNBZddw==}
     peerDependencies:
-      react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+      react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^18.0.0
+      react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^18.0.0
     dependencies:
       prop-types: 15.8.1
       react: 18.2.0

@@ -11,7 +11,7 @@ import CancelIcon from '@material-ui/icons/Cancel'
 import CompareArrowsIcon from '@material-ui/icons/CompareArrows'
 import RemoveIcon from '@material-ui/icons/Remove'
 import { FaCalculator as CalculatorIcon } from 'react-icons/fa'
-import NumberFormat from 'react-number-format'
+import { NumericFormat } from 'react-number-format'
 
 import { CurrencyValue } from '../shared/currencies'
 
@@ -35,18 +35,19 @@ interface MuiInputProps {
   openCalculator: () => void
   value: string
   transactionType?: 'income' | 'expense' | 'transfer'
+  placeholder: string
 }
 
 const amountFieldId = 'amount-field'
 
-const MuiInput: React.FC<MuiInputProps> = ({ clearAmount, openCalculator, value, transactionType, ...others }) => {
+const MuiInput: React.FC<MuiInputProps> = ({ clearAmount, openCalculator, transactionType, value, ...others }) => {
   const theme = useTheme()
+
   return (
     <Input
       {...others}
       inputProps={{ inputMode: 'numeric' }}
       id={amountFieldId}
-      placeholder="0.00"
       value={value}
       startAdornment={
         transactionType === 'expense' ? (
@@ -118,13 +119,15 @@ const AmountField = ({
         style={{ flex: 1 }}
       >
         <InputLabel htmlFor={amountFieldId}>{label}</InputLabel>
-        <NumberFormat
+        <NumericFormat
           prefix={`${currency.symbol} `}
           thousandSeparator=","
           decimalScale={currency.scale}
           fixedDecimalScale
           allowNegative={false}
           value={value}
+          valueIsNumericString={true}
+          placeholder={`${currency.symbol} 0.00`}
           customInput={MuiInput}
           onValueChange={(values) => {
             if (values.value !== value) onChange(values.value)
