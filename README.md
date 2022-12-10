@@ -20,8 +20,8 @@ account.
    previous step. You need to create `.env-dev` file according to `.env-template`.
 3. [Configure cloud storage CORS](#configure-cloud-storage-cors) - This is needed for firebase storage to work.
 4. Create a `serviceAccount.json` - This file is needed for e2e tests. Follow
-   [cypress-firebase setup](https://github.com/prescottprue/cypress-firebase#setup) for information on how to obtain it
-   (only download the service account - no additional setup is required).
+   [these instructions](https://sites.google.com/site/scriptsexamples/new-connectors-to-google-services/firebase/tutorials/authenticate-with-a-service-account?pli=1)
+   for information on how to obtain it (only download the service account - no additional setup is required).
 5. Install `node` and `pnpm`. See package.json for supported versions.
 6. Run `pnpm install` to install project dependencies.
 

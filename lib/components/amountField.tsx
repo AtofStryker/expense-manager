@@ -123,7 +123,6 @@ const AmountField = ({
           prefix={`${currency.symbol} `}
           thousandSeparator=","
           decimalScale={currency.scale}
-          fixedDecimalScale
           allowNegative={false}
           value={value}
           valueIsNumericString={true}

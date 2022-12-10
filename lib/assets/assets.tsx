@@ -11,7 +11,6 @@ import { assetTagsSumsSel } from './selectors'
 
 const Assets = () => {
   const data = useSelector(assetTagsSumsSel)
-  console.log(data)
 
   return (
     <PageWrapper>

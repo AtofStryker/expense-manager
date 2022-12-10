@@ -9,7 +9,6 @@
     "dev": "cross-env NODE_OPTIONS=--max_old_space_size=8192 next dev",
     "lint:fix": "pnpm run lint --fix",
     "lint": "eslint --ext js,ts,tsx . --max-warnings 0",
-    "prettier:fix:quick": "pretty-quick --staged",
     "prettier:fix": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "prettier": "prettier --check \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "test:e2e:open": "cypress open",

@@ -41,6 +41,11 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 7.18.1
+      - name: Create .env-dev
+        env:
+          ENV_SECRETS: ${{ secrets.ENV_SECRETS }}
+        # This seems to be the easiest way: https://stackoverflow.com/a/64452700/7227455
+        run: echo $ENV_SECRETS | base64 -d > .env-dev
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
