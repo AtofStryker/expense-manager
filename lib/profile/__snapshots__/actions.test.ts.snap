@@ -1,26 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`settings actions import/export csv format creates new tags and txs 1`] = `
-Object {
+{
   "errorReason": "-0.7 is not in a valid amount format",
-  "profile": Object {},
-  "tags": Object {
-    "0": Object {
+  "profile": {},
+  "tags": {
+    "0": {
       "automatic": false,
       "id": 0,
       "name": "Tickets",
       "uid": null,
     },
   },
-  "transactions": Object {
-    "1": Object {
+  "transactions": {
+    "1": {
       "amount": 1,
       "currency": "EUR",
       "dateTime": 2017-08-19T00:00:00.000Z,
       "id": 1,
       "note": "",
       "repeating": "none",
-      "tagIds": Array [
+      "tagIds": [
         "id1",
         0,
       ],
@@ -32,38 +32,38 @@ Object {
 `;
 
 exports[`settings actions import/export csv format creates new tags and txs 2`] = `
-Object {
+{
   "errorReason": undefined,
-  "profile": Object {},
-  "tags": Object {
-    "2": Object {
+  "profile": {},
+  "tags": {
+    "2": {
       "automatic": false,
       "id": 2,
       "name": "A",
       "uid": null,
     },
-    "3": Object {
+    "3": {
       "automatic": false,
       "id": 3,
       "name": "B",
       "uid": null,
     },
-    "4": Object {
+    "4": {
       "automatic": false,
       "id": 4,
       "name": "C",
       "uid": null,
     },
   },
-  "transactions": Object {
-    "5": Object {
+  "transactions": {
+    "5": {
       "amount": 1.56,
       "currency": "EUR",
       "dateTime": 2016-02-16T00:00:00.000Z,
       "id": 5,
       "note": "",
       "repeating": "monthly",
-      "tagIds": Array [
+      "tagIds": [
         2,
         3,
         4,

@@ -1,18 +1,16 @@
-module.exports = {
-  preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.json',
-    },
-  },
+const nextJest = require('next/jest')
+
+const createJestConfig = nextJest({
+  // Must point to the path with "next.config.js".
+  dir: './',
+})
+
+const baseConfig = {
   clearMocks: true,
   testMatch: ['**/?(*.)+(test).ts?(x)'],
-  coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: -10,
-    },
-  },
 }
+
+/**
+ * @type {import('jest').Config}
+ */
+module.exports = createJestConfig(baseConfig)

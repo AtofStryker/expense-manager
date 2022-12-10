@@ -11,6 +11,7 @@ const parseEnvironmentVariablesAndGetError = () => {
   const environment = getEnvironment()
   switch (environment) {
     case 'development':
+    case 'test':
       return parseCredentials('.env-dev').error
     // For production env variables see: https://vercel.com/siegrift/expense-manager-pwa/settings/general. They will
     // already be available as env variables by Vercel.
