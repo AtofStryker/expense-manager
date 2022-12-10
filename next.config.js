@@ -6,6 +6,7 @@
 // impacts which credentials are loaded and not how applications works.
 const getEnvironment = () => process.env.ENVIRONMENT || process.env.NODE_ENV
 
+// TODO: Use zod schema to verify that ENV variables are correct
 const parseEnvironmentVariablesAndGetError = () => {
   const environment = getEnvironment()
   switch (environment) {
@@ -31,22 +32,21 @@ if (error) {
   throw new Error(`Unable to parse credentials. Reason: ${error.message}`)
 }
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
-const withPwa = require('next-pwa')({
-  dest: 'public',
-  // Turn off in development. Turn this on for debugging purposes if needeed.
-  disable: process.env.NODE_ENV === 'development',
-})
+const getPlugins = () => {
+  const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    // Only load dependency if env `ANALYZE` was set
+    enabled: process.env.ANALYZE === 'true',
+  })
 
-const compose = (...fns) =>
-  fns.reduce(
-    (a, b) =>
-      (...args) =>
-        a(b(...args)),
-    (arg) => arg
-  )
+  const withPwa = require('next-pwa')({
+    dest: 'public',
+    // Turn off in development. Turn this on for debugging purposes if needeed.
+    disable: process.env.NODE_ENV === 'development',
+    register: true,
+  })
+
+  return [withBundleAnalyzer, withPwa]
+}
 
 /**
  * @type {import('next').NextConfig}
@@ -61,6 +61,11 @@ const nextConfig = {
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID ?? '',
     FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID ?? '',
   },
+  reactStrictMode: true,
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV !== 'development',
+  },
 }
 
-module.exports = compose(withBundleAnalyzer, withPwa)(nextConfig)
+module.exports = getPlugins().reduce((acc, plugin) => plugin(acc), nextConfig)

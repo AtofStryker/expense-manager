@@ -31,7 +31,11 @@ cypress/screenshots
 # vscode
 .vscode
 
-.now
-
 # firebase dev service account info for cypress
 serviceAccount.json
+
+# generated files
+**/public/workbox-*.js
+**/public/sw.js
+.vercel
+tsconfig.tsbuildinfo

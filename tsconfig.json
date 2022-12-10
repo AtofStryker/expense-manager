@@ -19,7 +19,6 @@
     "suppressImplicitAnyIndexErrors": true,
     "types": ["node", "jest"],
     "rootDirs": ["lib", "pages"],
-    "outDir": "build/lib",
     "incremental": true
   },
   // Not including "cypress.config.ts" because it would import the global Cypress types which would conflict Jest. See:
