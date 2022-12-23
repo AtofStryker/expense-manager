@@ -39,9 +39,8 @@ export interface Transaction extends BaseTransaction, FirebaseField {
 }
 
 export interface AddTransaction extends BaseTransaction {
-  useCurrentTime: boolean
   newTags: ObjectOf<Tag>
-  dateTime?: Date
+  dateTime: Date | null | undefined
   tagInputValue: string
   amount: string
   shouldValidateAmount: boolean
@@ -61,8 +60,7 @@ export const createDefaultAddTransactionState = (initialProps?: CreateStateProps
   tagInputValue: '',
   type: 'expense',
   note: '',
-  dateTime: undefined,
-  useCurrentTime: true,
+  dateTime: new Date(),
   shouldValidateAmount: false,
   repeating: RepeatingOptions.none,
   attachedFileObjects: [],

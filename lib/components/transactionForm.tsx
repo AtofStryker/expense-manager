@@ -12,7 +12,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
   Grid,
   IconButton,
   InputLabel,
@@ -24,11 +23,11 @@ import {
   MenuItem,
   Select,
   Theme,
-  Switch,
   TextField,
   Typography,
 } from '@mui/material'
-import { DateTimePicker } from '@mui/x-date-pickers'
+import { DateTimePicker, DatePicker, TimePicker } from '@mui/x-date-pickers'
+import { addDays, addMinutes, getMinutes, setMinutes, subDays, subMinutes } from 'date-fns'
 import { DropzoneAreaBase, FileObject } from 'mui-file-dropzone'
 import Image from 'next/image'
 import Highlight from 'react-highlight.js'
@@ -42,7 +41,7 @@ import Paper from '../components/paper'
 import TagField from '../components/tagField'
 import { getStorageRef } from '../firebase/firebase'
 import { setSnackbarNotification, withErrorHandler } from '../shared/actions'
-import { DEFAULT_DATE_TIME_FORMAT } from '../shared/constants'
+import { DEFAULT_DATE_FORMAT, DEFAULT_DATE_TIME_FORMAT, DEFAULT_TIME_FORMAT } from '../shared/constants'
 import { Currency, CURRENCIES } from '../shared/currencies'
 import { useFirebaseLoaded } from '../shared/hooks'
 import { mainCurrencySel, exchangeRatesSel, currentUserIdSel } from '../shared/selectors'
@@ -51,6 +50,8 @@ import { areDistinct, computeExchangeRate, downloadTextFromUrl } from '../shared
 import { ObjectOf } from '../types'
 
 import CurrencySelect from './currencySelect'
+import HotkeyLabel from './hotkeyLabel'
+
 const useStyles = makeStyles()((theme: Theme) => ({
   row: {
     display: 'flex',
@@ -62,6 +63,16 @@ const useStyles = makeStyles()((theme: Theme) => ({
     },
   },
   currency: { width: 105, marginLeft: theme.spacing(2) },
+  time: { marginLeft: theme.spacing(2) },
+  startAdornment: {
+    '& .MuiSvgIcon-root': { color: theme.palette.primary.main },
+    '& .MuiButtonBase-root': { padding: 4, margin: 0, marginLeft: -14 },
+  },
+  endAdornment: {
+    display: 'flex',
+    alignItems: 'center',
+    '& > *:not(:first-of-type)': { marginLeft: theme.spacing(0.5) },
+  },
   dropzoneText: {
     fontSize: theme.typography.body1.fontSize,
     marginTop: theme.spacing(1.5),
@@ -107,7 +118,6 @@ interface BaseProps {
 
 type AddTxFormVariantProps = {
   variant: 'add'
-  useCurrentTime: FieldProps<boolean>
 }
 
 type EditTxFormVariantProps = {
@@ -172,7 +182,6 @@ const FileContent = ({ rawContent, url, filename, isImage }: ShowFileContent) =>
 
 const TransactionForm = (props: TransactionFormProps) => {
   const { variant, tagProps, type, amount, currency, dateTime, onSubmit, repeating, note, attachedFileObjects } = props
-  const useCurrentTime = variant === 'add' && (props as AddTxFormVariantProps).useCurrentTime
   const uploadedFiles = variant === 'edit' && (props as EditTxFormVariantProps).uploadedFiles
   const txId = variant === 'edit' && (props as EditTxFormVariantProps).id
 
@@ -239,10 +248,11 @@ const TransactionForm = (props: TransactionFormProps) => {
       <Grid container className={classes.row}>
         <AmountField
           type={type.value}
+          setTransactionType={type.handler}
           currency={CURRENCIES[currency.value]}
           isValidAmount={amount.isValid}
           shouldValidateAmount={amount.validate}
-          label="Transaction amount"
+          label="Amount"
           value={amount.value}
           onChange={amount.handler}
           onPressEnter={onSubmit}
@@ -343,57 +353,100 @@ const TransactionForm = (props: TransactionFormProps) => {
         />
       </Grid>
 
-      {useCurrentTime && (
-        <>
-          <Grid
-            className={classes.row}
-            css={css`
-              justify-content: start;
-            `}
-          >
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={useCurrentTime.value}
-                  onChange={() => {
-                    useCurrentTime.handler(!useCurrentTime.value)
-                  }}
-                  color="primary"
-                />
-              }
-              label="Use current date and time"
-            />
-          </Grid>
+      <Grid className={classes.row}>
+        <DatePicker
+          inputFormat={DEFAULT_DATE_FORMAT}
+          disableFuture
+          value={dateTime.value}
+          onChange={dateTime.handler}
+          label="Date"
+          renderInput={(props) => (
+            <TextField
+              {...props}
+              InputLabelProps={{ shrink: true }}
+              InputProps={{
+                startAdornment: <div className={classes.startAdornment}>{props.InputProps?.endAdornment}</div>,
+                endAdornment: (
+                  <div className={classes.endAdornment}>
+                    <HotkeyLabel size="small" hotkey="↑" />
+                    <HotkeyLabel size="small" hotkey="↓" />
+                  </div>
+                ),
+              }}
+              css={css`
+                flex: 1;
+              `}
+              onKeyDown={(e) => {
+                if (!dateTime.value) return
 
-          {/* override margin set by parent component */}
-          <Collapse
-            in={!useCurrentTime.value}
-            css={css`
-              // Needed because the parent selector is too specific and adds padding for every paper child element.
-              margin: 0 !important;
-            `}
-          >
-            <Grid className={classes.row}>
-              <DateTimePicker
-                inputFormat={DEFAULT_DATE_TIME_FORMAT}
-                ampm={false}
-                disableFuture
-                value={dateTime.value}
-                onChange={dateTime.handler}
-                label="Transaction date"
-                renderInput={(props) => (
-                  <TextField
-                    {...props}
-                    css={css`
-                      flex: 1;
-                    `}
-                  />
-                )}
-              />
-            </Grid>
-          </Collapse>
-        </>
-      )}
+                switch (e.key) {
+                  case 'ArrowUp':
+                    e.preventDefault()
+                    e.stopPropagation()
+                    dateTime.handler(addDays(dateTime.value, 1))
+                    break
+                  case 'ArrowDown':
+                    e.preventDefault()
+                    e.stopPropagation()
+                    dateTime.handler(subDays(dateTime.value, 1))
+                    break
+                  default:
+                    break
+                }
+              }}
+            />
+          )}
+        />
+        <TimePicker
+          className={classes.time}
+          inputFormat={DEFAULT_TIME_FORMAT}
+          value={dateTime.value}
+          onChange={dateTime.handler}
+          label="Time"
+          renderInput={(props) => (
+            <TextField
+              {...props}
+              InputLabelProps={{ shrink: true }}
+              InputProps={{
+                startAdornment: <div className={classes.startAdornment}>{props.InputProps?.endAdornment}</div>,
+                endAdornment: (
+                  <div className={classes.endAdornment}>
+                    <HotkeyLabel size="small" hotkey="↑" />
+                    <HotkeyLabel size="small" hotkey="↓" />
+                  </div>
+                ),
+              }}
+              css={css`
+                flex: 1;
+              `}
+              onKeyDown={(e) => {
+                if (!dateTime.value) return
+
+                const minutesAddition = 15
+                const roundMinutes = (date: Date) => {
+                  const minutes = getMinutes(date)
+                  return setMinutes(date, minutesAddition * Math.floor(minutes / minutesAddition))
+                }
+
+                switch (e.key) {
+                  case 'ArrowUp':
+                    e.preventDefault()
+                    e.stopPropagation()
+                    dateTime.handler(addMinutes(roundMinutes(dateTime.value), minutesAddition))
+                    break
+                  case 'ArrowDown':
+                    e.preventDefault()
+                    e.stopPropagation()
+                    dateTime.handler(subMinutes(roundMinutes(dateTime.value), minutesAddition))
+                    break
+                  default:
+                    break
+                }
+              }}
+            />
+          )}
+        />
+      </Grid>
 
       {variant === 'edit' && (
         <Grid className={classes.row}>
@@ -403,10 +456,11 @@ const TransactionForm = (props: TransactionFormProps) => {
             disableFuture
             value={dateTime.value}
             onChange={dateTime.handler}
-            label="Transaction date"
+            label="Datetime"
             renderInput={(props) => (
               <TextField
                 {...props}
+                InputLabelProps={{ shrink: true }}
                 css={css`
                   flex: 1;
                 `}

@@ -4,7 +4,8 @@ export const PROJECT_DESCRIPTION =
 export const PROJECT_TITLE = 'Expense manager'
 export const BACKGROUND_COLOR = 'blanchedalmond'
 export const DEFAULT_DATE_FORMAT = 'dd/MM/yyyy'
-export const DEFAULT_DATE_TIME_FORMAT = 'dd/MM/yyyy HH:mm'
+export const DEFAULT_TIME_FORMAT = 'HH:mm'
+export const DEFAULT_DATE_TIME_FORMAT = `${DEFAULT_DATE_FORMAT} ${DEFAULT_TIME_FORMAT}`
 
 // errors
 export const NO_USER_ID_ERROR = 'Unable to get user id of current user!'

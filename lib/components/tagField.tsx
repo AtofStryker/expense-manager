@@ -61,7 +61,7 @@ const TagField = ({
           return typeof option === 'string' ? option : option.name
         }}
         renderInput={(params) => {
-          return <TextField {...params} variant="outlined" label="Transaction tags" fullWidth />
+          return <TextField {...params} variant="outlined" label="Tags" fullWidth />
         }}
         filterOptions={(options, params) => {
           const filtered = filterOptions(options, params)

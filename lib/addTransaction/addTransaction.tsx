@@ -19,7 +19,8 @@ import { AddTransaction as AddTransactionType, Tag, createDefaultAddTransactionS
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const emptyFunction = () => {}
 
-const allFieldsAreValid = (addTx: AddTransactionType) => isAmountInValidFormat(addTx.amount)
+// TODO: Use zod to validate
+const allFieldsAreValid = (addTx: AddTransactionType) => isAmountInValidFormat(addTx.amount) && addTx.dateTime
 
 const maybeApplyDefaultAmount = (tags: Tag[], amount: string) => {
   if (amount) return amount
@@ -43,7 +44,6 @@ const AddTransaction = () => {
     type,
     note,
     dateTime,
-    useCurrentTime,
     repeating,
     shouldValidateAmount,
     attachedFileObjects,
@@ -163,19 +163,10 @@ const AddTransaction = () => {
         }}
         dateTime={{
           value: dateTime,
-          handler: (dt) =>
+          handler: (newDate) =>
             setAddTx((currAddTx) => ({
               ...currAddTx,
-              dateTime: dt ?? undefined,
-            })),
-        }}
-        useCurrentTime={{
-          value: useCurrentTime,
-          handler: () =>
-            setAddTx((currAddTx) => ({
-              ...currAddTx,
-              useCurrentTime: !useCurrentTime,
-              dateTime: useCurrentTime ? undefined : new Date(),
+              dateTime: newDate,
             })),
         }}
         repeating={{

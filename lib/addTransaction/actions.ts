@@ -43,8 +43,8 @@ export const addTransaction =
       const tx: Transaction = {
         id,
         ...pick(addTx, ['tagIds', 'currency', 'type', 'note', 'repeating']),
+        dateTime: addTx.dateTime!,
         amount: Number.parseFloat(addTx.amount),
-        dateTime: addTx.useCurrentTime ? new Date() : addTx.dateTime!,
         uid: userId,
         rate: computeExchangeRate(exchangeRates.rates, addTx.currency, mainCurrency),
         attachedFiles: addTx.attachedFileObjects.map(({ file }) => file.name),
