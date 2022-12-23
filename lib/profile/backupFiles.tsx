@@ -1,26 +1,30 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 
-import Button from '@material-ui/core/Button'
-import Checkbox from '@material-ui/core/Checkbox'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Divider from '@material-ui/core/Divider'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
-import { makeStyles, Theme } from '@material-ui/core/styles'
-import BackupIcon from '@material-ui/icons/Backup'
-import UnselectAllIcon from '@material-ui/icons/ClearAll'
-import DeleteIcon from '@material-ui/icons/Delete'
-import SelectAllIcon from '@material-ui/icons/DoneAll'
-import DownloadIcon from '@material-ui/icons/GetApp'
-import Alert from '@material-ui/lab/Alert'
+import { css } from '@emotion/react'
+import BackupIcon from '@mui/icons-material/Backup'
+import UnselectAllIcon from '@mui/icons-material/ClearAll'
+import DeleteIcon from '@mui/icons-material/Delete'
+import SelectAllIcon from '@mui/icons-material/DoneAll'
+import DownloadIcon from '@mui/icons-material/GetApp'
+import {
+  Alert,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  List,
+  ListItemButton,
+  ListItemSecondaryAction,
+  ListItemText,
+  Theme,
+} from '@mui/material'
 import { update } from '@siegrift/tsfunct'
 import Highlight from 'react-highlight.js'
 import { useDispatch, useSelector } from 'react-redux'
+import { makeStyles } from 'tss-react/mui'
 
 import ConfirmDialog from '../components/confirmDialog'
 import Loading from '../components/loading'
@@ -37,7 +41,7 @@ import {
   listBackupFilesForUser,
 } from './backupCommons'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   buttonsWrapper: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -65,13 +69,13 @@ interface ShowFileContent {
 }
 
 const BackupFilesList = () => {
-  const classes = useStyles()
-  const [listItems, setListItems] = React.useState<ListItemData[] | null | undefined>(undefined)
+  const { classes } = useStyles()
+  const [listItems, setListItems] = useState<ListItemData[] | null | undefined>(undefined)
   const firebaseLoaded = useSelector(firebaseLoadedSel)
   const userId = useSelector(currentUserIdSel)
   const dispatch = useDispatch()
-  const [showRemoveFileDialog, setShowRemoveFileDialog] = React.useState(false)
-  const [showFile, setShowFile] = React.useState<ShowFileContent | null>(null)
+  const [showRemoveFileDialog, setShowRemoveFileDialog] = useState(false)
+  const [showFile, setShowFile] = useState<ShowFileContent | null>(null)
 
   const somethingSelected = !!listItems && !listItems.find((i) => i.checked)
 
@@ -79,7 +83,7 @@ const BackupFilesList = () => {
     setListItems(update(listItems!, [index, 'checked'], (val) => !val))
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!firebaseLoaded) return
     setListItems(null)
 
@@ -94,20 +98,29 @@ const BackupFilesList = () => {
     }
 
     performAsyncCall()
-  }, [firebaseLoaded])
+  }, [dispatch, firebaseLoaded, userId])
 
   if (!firebaseLoaded || listItems === undefined) return null
   else if (listItems === null)
-    return <Loading size={100} text="Loading backup files..." textStyle={{ fontSize: '2.0em' }} />
+    return (
+      <Loading
+        size={100}
+        text="Loading backup files..."
+        cssOverrides={{
+          text: css`
+            font-size: 2em;
+          `,
+        }}
+      />
+    )
   else {
     return (
       <>
         <List dense>
           {listItems.map(({ filename, checked }, index) => {
             return (
-              <ListItem
+              <ListItemButton
                 key={filename}
-                button
                 onClick={async () => {
                   setShowFile({ filename, content: undefined })
                   const success = await withErrorHandler('Unable to download file content', dispatch, async () => {
@@ -124,7 +137,7 @@ const BackupFilesList = () => {
                 <ListItemSecondaryAction>
                   <Checkbox edge="end" onChange={handleToggle(index)} checked={checked} />
                 </ListItemSecondaryAction>
-              </ListItem>
+              </ListItemButton>
             )
           })}
           <Divider />
@@ -245,7 +258,13 @@ const BackupFiles = () => {
   return (
     <>
       {/* TODO: create section for attached files download */}
-      <Alert severity="info" style={{ marginBottom: 8, textTransform: 'initial' }}>
+      <Alert
+        severity="info"
+        css={css`
+          margin-bottom: 8px;
+          text-transform: initial;
+        `}
+      >
         Data is automatically saved every <b>{AUTO_BACKUP_PERIOD_DAYS} days</b>{' '}
         <i>(maybe more if there are no changes in the data)</i>.
       </Alert>

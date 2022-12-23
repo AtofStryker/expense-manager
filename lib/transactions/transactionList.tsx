@@ -1,11 +1,11 @@
-import React from 'react'
+import { createRef, useEffect } from 'react'
 
-import { Theme, makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
+import { Theme, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import { FixedSizeList } from 'react-window'
+import { makeStyles } from 'tss-react/mui'
 
 import { Transaction as TransactionType } from '../addTransaction/state'
 import { useIsBigDevice } from '../shared/hooks'
@@ -17,7 +17,7 @@ type Props = {
   transactions: TransactionType[]
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   noTransactionsWrapper: {
     display: 'flex',
     flexDirection: 'column',
@@ -35,14 +35,14 @@ interface ScrollAwareListProps {
 }
 
 /**
- * This compoenents needs to be isolated because we use ref to imperatively scroll the list.
+ * This component needs to be isolated because we use ref to imperatively scroll the list.
  * If this component is inlined in TransactionList directly, the flow "txs list -> edit tx -> back
  * button -> back txs list" will not scroll the correct list item (because ref is undefined).
  *
  * Not sure exactly why this is happening, but its probably due to how nextjs routing works.
  */
 const ScrollAwareList = ({ width, height, transactions }: ScrollAwareListProps) => {
-  const listRef = React.createRef<FixedSizeList>()
+  const listRef = createRef<FixedSizeList>()
   const bigDevice = useIsBigDevice()
   const router = useRouter()
   const dispatch = useDispatch()
@@ -50,13 +50,13 @@ const ScrollAwareList = ({ width, height, transactions }: ScrollAwareListProps) 
 
   // try to center the element that is in the hash
   const hash = router.asPath.split('#')[1]
-  React.useEffect(() => {
+  useEffect(() => {
     const curr = listRef.current
     const ind = transactions.findIndex((tx) => tx.id === hash)
 
     dispatch(setCursor(ind))
     if (curr && ind != -1) curr.scrollToItem(ind, 'auto')
-  }, [hash, listRef.current, transactions, itemSize /* item size impacts how much to scroll */])
+  }, [hash, transactions, itemSize, listRef, dispatch])
 
   return (
     <FixedSizeList
@@ -73,7 +73,7 @@ const ScrollAwareList = ({ width, height, transactions }: ScrollAwareListProps) 
 }
 
 const TransactionList = ({ transactions }: Props) => {
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return (
     <>

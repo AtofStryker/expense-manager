@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 
+import { css } from '@emotion/react'
 import { Line } from '@nivo/line'
 import { addMonths } from 'date-fns'
 import format from 'date-fns/format'
@@ -34,20 +35,20 @@ const AssetBalance = ({ width, height, dateRange }: Props) => {
 
       return (
         <div
-          style={{
-            background: 'white',
-            padding: '9px 12px',
-            border: '1px solid #ccc',
-          }}
+          css={css`
+            background: white;
+            padding: 9px 12px;
+            border: 1px solid #ccc;
+          `}
         >
           {format(addMonths(computedDateRange.start, slice.points[0].data.index), SLICE_DATE_FORMAT)}
           {slice.points.map((point: any) => (
             <div
               key={point.id}
-              style={{
-                color: point.serieColor,
-                padding: '3px 0',
-              }}
+              css={css`
+                color: ${point.serieColor};
+                padding: 3px 0;
+              `}
             >
               <strong>
                 {point.serieId + ': '}
@@ -58,7 +59,7 @@ const AssetBalance = ({ width, height, dateRange }: Props) => {
         </div>
       )
     },
-    [monthsToDisplay, mainCurrency]
+    [mainCurrency, computedDateRange]
   )
 
   // TODO: for some reason width can be 0 while calling selectors and then they cant work properly
@@ -88,9 +89,9 @@ const AssetBalance = ({ width, height, dateRange }: Props) => {
 
   return (
     <div
-      style={{
-        position: 'relative' /* to make sure the toggle absolutely positioned toggle buttons are scoped */,
-      }}
+      css={css`
+        position: relative; /* to make sure the toggle absolutely positioned toggle buttons are scoped */
+      `}
     >
       <Line
         width={width}

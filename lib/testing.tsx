@@ -1,8 +1,6 @@
-import React from 'react'
-
-import { LocalizationProvider } from '@material-ui/pickers'
-import DateFnsUtils from '@material-ui/pickers/adapter/date-fns'
-import { ThemeProvider } from '@material-ui/styles'
+import { ThemeProvider } from '@mui/material/styles'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import firebasemock from 'firebase-mock'
 import { Provider as ReduxProvider } from 'react-redux'
 import { Store, applyMiddleware, createStore } from 'redux'
@@ -16,7 +14,7 @@ export const reduxify = (Component: React.FC, store: Store) => {
   return (
     <ReduxProvider store={store}>
       <ThemeProvider theme={theme}>
-        <LocalizationProvider dateAdapter={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Component />
         </LocalizationProvider>
       </ThemeProvider>
@@ -29,6 +27,8 @@ export const configureTestStore = (state: Partial<State> = getInitialState()) =>
     logger,
   }
   const middlewares = [thunk.withExtraArgument(thunkExtra)]
+  // TODO: Migrate to redux-toolkit or avoid global store at all
+  // eslint-disable-next-line deprecation/deprecation
   const store = createStore<State, any, unknown, unknown>(
     rootReducer as any,
     state as any,

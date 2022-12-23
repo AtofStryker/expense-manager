@@ -1,59 +1,60 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Divider from '@material-ui/core/Divider'
-import IconButton from '@material-ui/core/IconButton'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import InputBase from '@material-ui/core/InputBase'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import Paper from '@material-ui/core/Paper'
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
-import Tooltip from '@material-ui/core/Tooltip'
-import Typography from '@material-ui/core/Typography'
-import CancelIcon from '@material-ui/icons/Cancel'
-import CodeIcon from '@material-ui/icons/Code'
-import InfoIcon from '@material-ui/icons/InfoOutlined'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import classnames from 'classnames'
+import { css } from '@emotion/react'
+import CancelIcon from '@mui/icons-material/Cancel'
+import CodeIcon from '@mui/icons-material/Code'
+import InfoIcon from '@mui/icons-material/InfoOutlined'
+import {
+  Autocomplete,
+  Theme,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  InputAdornment,
+  InputBase,
+  Menu,
+  MenuItem,
+  Paper,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
+import { makeStyles } from 'tss-react/mui'
 
 import { setCurrentFilter } from '../filters/actions'
 import { availableFiltersSel, currentFilterSel, filtersErrorSel } from '../filters/selectors'
 import { useIsBigDevice } from '../shared/hooks'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: theme.spacing(1) / 2,
-    },
-    iconButton: {
-      padding: theme.spacing(1),
-    },
-    divider: {
-      height: '60%',
-    },
-    invalidQuery: {
-      color: 'red',
-    },
-    validQuery: {
-      color: theme.palette.primary.main,
-    },
-    command: {
-      textAlign: 'center',
-      whiteSpace: 'nowrap',
-      marginRight: theme.spacing(1) / 2,
-    },
-    fullWidth: { flex: 1 },
-  })
-)
+const useStyles = makeStyles()((theme: Theme) => ({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(1 / 2),
+  },
+  iconButton: {
+    padding: theme.spacing(1),
+  },
+  divider: {
+    height: '60%',
+  },
+  invalidQuery: {
+    color: 'red',
+  },
+  validQuery: {
+    color: theme.palette.primary.main,
+  },
+  command: {
+    textAlign: 'center',
+    whiteSpace: 'nowrap',
+    marginRight: theme.spacing(1 / 2),
+  },
+  fullWidth: { flex: 1 },
+}))
 
 type Query = {
   command?: string
@@ -81,7 +82,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   isValidQuery,
   valueOptions,
 }) => {
-  const classes = useStyles()
+  const { classes, cx } = useStyles()
   const [showDialog, setShowDialog] = useState(false)
   const isBigDevice = useIsBigDevice()
   const [showFiltersAnchor, setShowFiltersAnchor] = useState<null | HTMLElement>(null)
@@ -94,7 +95,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <>
       {
-        <Paper className={classnames(classes.root, className)}>
+        <Paper className={cx(classes.root, className)}>
           <IconButton className={classes.iconButton} onClick={() => setShowDialog(!showDialog)}>
             <InfoIcon color="primary" />
           </IconButton>
@@ -129,15 +130,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
                   variant="contained"
                   color="secondary"
                   size="small"
-                  style={{ marginRight: 8 }}
+                  css={css`
+                    margin-right: 8px;
+                  `}
                   onClick={() => dispatch(setCurrentFilter(undefined))}
                   endIcon={
                     <CancelIcon
                       color="inherit"
                       onClick={() => onQueryChange({ value: '' })}
-                      style={{
-                        marginRight: 2,
-                      }}
+                      css={css`
+                        margin-right: 2px;
+                      `}
                     />
                   }
                 >
@@ -148,7 +151,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
           ) : (
             <Autocomplete<string, false, false, true>
               size="medium"
-              style={{ flex: 1 }}
+              css={css`
+                flex: 1;
+              `}
               options={
                 query.command === undefined
                   ? commands.filter((c) => c.startsWith(query.value))
@@ -175,10 +180,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                           variant="body1"
                           component="span"
                           display="block"
-                          className={classnames(
-                            classes.command,
-                            isValidQuery ? classes.validQuery : classes.invalidQuery
-                          )}
+                          className={cx(classes.command, isValidQuery ? classes.validQuery : classes.invalidQuery)}
                         >
                           {query.command}
                         </Typography>
@@ -189,11 +191,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
                         <CancelIcon
                           color="primary"
                           onClick={() => onQueryChange({ value: '' })}
-                          style={{
-                            marginRight: 2,
-                            cursor: 'pointer',
-                            visibility: query.command || query.value ? 'visible' : 'hidden',
-                          }}
+                          css={css`
+                            margin-right: 2px;
+                            cursor: pointer;
+                            visibility: ${query.command || query.value ? 'visible' : 'hidden'};
+                          `}
                         />
                       </InputAdornment>
                     }

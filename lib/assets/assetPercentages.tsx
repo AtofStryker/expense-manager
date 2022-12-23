@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { ResponsivePie } from '@nivo/pie'
 import { useSelector } from 'react-redux'
 

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Pie } from '@nivo/pie'
 import { useSelector } from 'react-redux'
 

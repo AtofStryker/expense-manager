@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-import { useMediaQuery, useTheme } from '@material-ui/core'
+import { useMediaQuery, useTheme } from '@mui/material'
 import { useSelector } from 'react-redux'
 
 import { ExchangeRates } from '../profile/state'
@@ -33,7 +33,7 @@ export const useFetch = (url: string) => {
     }
 
     fetchData()
-  }, [])
+  }, [url])
   return { loading: response === null, error, data: response }
 }
 
@@ -50,7 +50,7 @@ export const useEffectAfterFirebaseLoaded = (effectCb: () => void) => {
     if (!loaded || executed) return
     effectCb()
     setExecuted(true)
-  }, [loaded, executed])
+  }, [loaded, executed, effectCb])
 }
 
 export const useKeyDownAction = (action: (e: KeyboardEvent) => void) => {

@@ -1,21 +1,17 @@
-import React, { Suspense, useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 
-import FormControl from '@material-ui/core/FormControl'
-import Input from '@material-ui/core/Input'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import InputLabel from '@material-ui/core/InputLabel'
-import { useTheme } from '@material-ui/core/styles'
-import Tooltip from '@material-ui/core/Tooltip'
-import AddIcon from '@material-ui/icons/Add'
-import CancelIcon from '@material-ui/icons/Cancel'
-import CompareArrowsIcon from '@material-ui/icons/CompareArrows'
-import RemoveIcon from '@material-ui/icons/Remove'
+import { css } from '@emotion/react'
+import AddIcon from '@mui/icons-material/Add'
+import CancelIcon from '@mui/icons-material/Cancel'
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
+import RemoveIcon from '@mui/icons-material/Remove'
+import { FormControl, Input, InputAdornment, InputLabel, useTheme, Tooltip } from '@mui/material'
 import { FaCalculator as CalculatorIcon } from 'react-icons/fa'
 import { NumericFormat } from 'react-number-format'
 
 import { CurrencyValue } from '../shared/currencies'
 
-const CalculatorDialog = React.lazy(() => import('./calculatorDialog'))
+const CalculatorDialog = lazy(() => import('./calculatorDialog'))
 const CALC_OPEN_TRIGGERERS = ['+', '-', '*', '/']
 
 interface AmountFieldProps {
@@ -51,11 +47,23 @@ const MuiInput: React.FC<MuiInputProps> = ({ clearAmount, openCalculator, transa
       value={value}
       startAdornment={
         transactionType === 'expense' ? (
-          <RemoveIcon style={{ color: 'red' }} />
+          <RemoveIcon
+            css={css`
+              color: red;
+            `}
+          />
         ) : transactionType === 'income' ? (
-          <AddIcon style={{ color: 'green' }} />
+          <AddIcon
+            css={css`
+              color: green;
+            `}
+          />
         ) : transactionType === 'transfer' ? (
-          <CompareArrowsIcon style={{ color: 'burlywood' }} />
+          <CompareArrowsIcon
+            css={css`
+              color: burlywood;
+            `}
+          />
         ) : null
       }
       endAdornment={
@@ -65,16 +73,29 @@ const MuiInput: React.FC<MuiInputProps> = ({ clearAmount, openCalculator, transa
               <CancelIcon
                 color="primary"
                 onClick={clearAmount}
-                style={{
-                  visibility: value ? 'visible' : 'hidden',
-                  marginRight: 2,
-                  cursor: 'pointer',
-                }}
+                css={css`
+                  visibility: ${value ? 'visible' : 'hidden'};
+                  margin-right: 3px;
+                  margin-bottom: 2px;
+                  cursor: pointer;
+                `}
               />
             </Tooltip>
-            <Tooltip title="Open calculator" style={{ cursor: 'pointer' }}>
+            <Tooltip
+              title="Open calculator"
+              css={css`
+                cursor: pointer;
+              `}
+            >
               <span>
-                <CalculatorIcon color={theme.palette.primary.main} size={20} onClick={openCalculator} />
+                <CalculatorIcon
+                  color={theme.palette.primary.main}
+                  size={20}
+                  onClick={openCalculator}
+                  css={css`
+                    margin-bottom: -2px;
+                  `}
+                />
               </span>
             </Tooltip>
           </>
@@ -116,7 +137,9 @@ const AmountField = ({
         aria-label="amount"
         error={shouldValidateAmount && !isValidAmount(value)}
         className={className}
-        style={{ flex: 1 }}
+        css={css`
+          flex: 1;
+        `}
       >
         <InputLabel htmlFor={amountFieldId}>{label}</InputLabel>
         <NumericFormat

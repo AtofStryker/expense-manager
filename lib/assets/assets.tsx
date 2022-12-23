@@ -1,5 +1,4 @@
-import React from 'react'
-
+import { css } from '@emotion/react'
 import { useSelector } from 'react-redux'
 
 import ChartWrapper from '../charts/chartWrapper'
@@ -20,7 +19,11 @@ const Assets = () => {
       />
       <ChartWrapper label="Asset percentages" renderChart={() => <AssetPercentages />} />
       <table>
-        <tr style={{ textAlign: 'left' }}>
+        <tr
+          css={css`
+            text-align: left;
+          `}
+        >
           <th>Asset</th>
           <th>Value</th>
         </tr>

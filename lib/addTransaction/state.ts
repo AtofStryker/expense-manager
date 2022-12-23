@@ -1,4 +1,4 @@
-import { FileObject } from 'material-ui-dropzone'
+import { FileObject } from 'mui-file-dropzone'
 
 import { Currency, DEFAULT_CURRENCY } from '../shared/currencies'
 import { ObjectOf, FirebaseField } from '../types'

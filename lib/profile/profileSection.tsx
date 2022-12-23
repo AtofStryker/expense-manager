@@ -1,13 +1,11 @@
-import React from 'react'
+import { useState } from 'react'
 
-import Accordion from '@material-ui/core/Accordion'
-import AccordionDetails from '@material-ui/core/AccordionDetails'
-import AccordionSummary from '@material-ui/core/AccordionSummary'
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import { css } from '@emotion/react'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()({
   importExportContent: {
     flexDirection: 'column',
   },
@@ -19,15 +17,17 @@ export interface ProfileSectionProps {
 }
 
 const ProfileSection: React.FunctionComponent<ProfileSectionProps> = (props) => {
-  const classes = useStyles()
-  const [expanded, setExpanded] = React.useState(false)
+  const { classes } = useStyles()
+  const [expanded, setExpanded] = useState(false)
 
   return (
     <Accordion
       expanded={expanded}
       onChange={() => setExpanded(!expanded)}
       aria-label={props.name}
-      style={{ textTransform: 'capitalize' }}
+      css={css`
+        text-transform: capitalize;
+      `}
       TransitionProps={{ unmountOnExit: true }}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>

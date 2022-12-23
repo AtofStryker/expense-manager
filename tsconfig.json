@@ -12,6 +12,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "jsxImportSource": "@emotion/react",
     "strict": true,
     "noImplicitReturns": true,
     // TODO: Remove once we are done with dependency updates

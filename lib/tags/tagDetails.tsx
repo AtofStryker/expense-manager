@@ -1,22 +1,19 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import { Theme, makeStyles } from '@material-ui/core/styles'
-import { SvgIconProps } from '@material-ui/core/SvgIcon'
-import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
-import AutoIcon from '@material-ui/icons/BrightnessAuto'
-import EuroIcon from '@material-ui/icons/Euro'
-import RecentlyUsedIcon from '@material-ui/icons/EventAvailable'
-import NotRecentlyUsedIcon from '@material-ui/icons/EventBusy'
-import TotalTxsIcon from '@material-ui/icons/PostAddTwoTone'
-import RepeatOneIcon from '@material-ui/icons/RepeatOne'
-import TimelineIcon from '@material-ui/icons/Timeline'
+import { css } from '@emotion/react'
+import AutoIcon from '@mui/icons-material/BrightnessAuto'
+import EuroIcon from '@mui/icons-material/Euro'
+import RecentlyUsedIcon from '@mui/icons-material/EventAvailable'
+import NotRecentlyUsedIcon from '@mui/icons-material/EventBusy'
+import TotalTxsIcon from '@mui/icons-material/PostAddTwoTone'
+import RepeatOneIcon from '@mui/icons-material/RepeatOne'
+import TimelineIcon from '@mui/icons-material/Timeline'
+import { Typography, TextField, SvgIconProps, Theme, Checkbox, FormControlLabel } from '@mui/material'
 import { map } from '@siegrift/tsfunct'
 import format from 'date-fns/format'
 import Router from 'next/router'
 import { useSelector } from 'react-redux'
+import { makeStyles } from 'tss-react/mui'
 
 import { Tag, Transaction } from '../addTransaction/state'
 import AmountField from '../components/amountField'
@@ -27,7 +24,7 @@ import { CURRENCIES } from '../shared/currencies'
 import { defaultCurrencySel } from '../shared/selectors'
 import { formatBoolean, isAmountInValidFormat } from '../shared/utils'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   root: {
     margin: theme.spacing(2),
     justifyContent: 'center',
@@ -38,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     '&:not(:last-child)': {
       marginBottom: theme.spacing(2),
     },
-    '& > *:not(:first-child)': {
+    '& > *:not(:first-of-type)': {
       marginTop: theme.spacing(2),
     },
   },
@@ -73,12 +70,35 @@ interface UsageStatRowProps {
 
 const UsageStatRow: React.FC<UsageStatRowProps> = ({ label, value, Icon, iconColor }) => {
   return (
-    <div style={{ display: 'flex', marginBottom: 2 }}>
-      <Icon style={{ marginRight: 5, width: '0.8em' }} color={iconColor || 'primary'} />
-      <Typography variant="body2" component="span" style={{ alignSelf: 'center', flex: 1 }}>
+    <div
+      css={css`
+        display: flex;
+        margin-bottom: 2px;
+      `}
+    >
+      <Icon
+        css={css`
+          margin-right: 5px;
+          width: 0.8em;
+        `}
+        color={iconColor || 'primary'}
+      />
+      <Typography
+        variant="body2"
+        component="span"
+        css={css`
+          align-self: center;
+          flex: 1;
+        `}
+      >
         {label}
       </Typography>
-      <Typography variant="button" style={{ alignSelf: 'right' }}>
+      <Typography
+        variant="button"
+        css={css`
+          align-self: right;
+        `}
+      >
         {typeof value === 'boolean' ? formatBoolean(value) : value}
       </Typography>
     </div>
@@ -86,7 +106,7 @@ const UsageStatRow: React.FC<UsageStatRowProps> = ({ label, value, Icon, iconCol
 }
 
 const TagDetails = ({ tag, stats, appBarTitle, onSave, onRemove }: TagDetailsProps) => {
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   const [tagName, setTagName] = useState(tag.name)
   const [isAutotag, setIsAutotag] = useState(tag.automatic)
@@ -161,33 +181,74 @@ const TagDetails = ({ tag, stats, appBarTitle, onSave, onRemove }: TagDetailsPro
 
           <FormControlLabel
             classes={{ label: classes.label }}
-            style={{ flex: 1, width: '100%' }}
+            css={css`
+              flex: 1;
+              width: 100%;
+            `}
             control={<Checkbox checked={isAutotag} onChange={() => setIsAutotag(!isAutotag)} />}
             label={
-              <div style={{ display: 'flex' }}>
-                <Typography variant="body2" component="span" style={{ alignSelf: 'center' }}>
+              <div
+                css={css`
+                  display: flex;
+                `}
+              >
+                <Typography
+                  variant="body2"
+                  component="span"
+                  css={css`
+                    align-self: center;
+                  `}
+                >
                   Automatic tag
                 </Typography>
-                <AutoIcon style={{ marginLeft: 4 }} color="primary" />
+                <AutoIcon
+                  css={css`
+                    margin-left: 4px;
+                  `}
+                  color="primary"
+                />
               </div>
             }
           />
           <FormControlLabel
             classes={{ label: classes.label }}
-            style={{ flex: 1, width: '100%' }}
+            css={css`
+              flex: 1;
+              width: 100%;
+            `}
             control={<Checkbox checked={isAsset} onChange={() => setIsAsset(!isAsset)} />}
             label={
-              <div style={{ display: 'flex' }}>
-                <Typography variant="body2" component="span" style={{ alignSelf: 'center' }}>
+              <div
+                css={css`
+                  display: flex;
+                `}
+              >
+                <Typography
+                  variant="body2"
+                  component="span"
+                  css={css`
+                    align-self: center;
+                  `}
+                >
                   Asset tag
                 </Typography>
-                <TimelineIcon style={{ marginLeft: 4 }} color="primary" />
+                <TimelineIcon
+                  css={css`
+                    margin-left: 4px;
+                  `}
+                  color="primary"
+                />
               </div>
             }
           />
         </Paper>
         {stats && (
-          <Paper style={{ flexDirection: 'column' }} label="Usage stats">
+          <Paper
+            css={css`
+              flex-direction: column;
+            `}
+            label="Usage stats"
+          >
             <UsageStatRow label="Transaction occurrences" value={stats.totalTxs} Icon={TotalTxsIcon} />
             <UsageStatRow label="Money involved" value={stats.moneyInvolvedInTxs} Icon={EuroIcon} />
             <UsageStatRow label="In recurring transaction" value={stats.isRecurring} Icon={RepeatOneIcon} />

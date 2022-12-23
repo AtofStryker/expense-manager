@@ -1,34 +1,39 @@
-import React from 'react'
+import { SyntheticEvent, useState } from 'react'
 
-import Button from '@material-ui/core/Button'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
-import Collapse from '@material-ui/core/Collapse'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Grid from '@material-ui/core/Grid'
-import IconButton from '@material-ui/core/IconButton'
-import InputLabel from '@material-ui/core/InputLabel'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import { Theme, makeStyles } from '@material-ui/core/styles'
-import Switch from '@material-ui/core/Switch'
-import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
-import CloseIcon from '@material-ui/icons/Cancel'
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
-import { DateTimePicker } from '@material-ui/pickers'
-import { DropzoneAreaBase, FileObject } from 'material-ui-dropzone'
+import { css } from '@emotion/react'
+import CloseIcon from '@mui/icons-material/Cancel'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import {
+  Button,
+  ButtonGroup,
+  Collapse,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  InputLabel,
+  List,
+  ListItemButton,
+  ListItemSecondaryAction,
+  ListItemText,
+  ListSubheader,
+  MenuItem,
+  Select,
+  Theme,
+  Switch,
+  TextField,
+  Typography,
+} from '@mui/material'
+import { DateTimePicker } from '@mui/x-date-pickers'
+import { DropzoneAreaBase, FileObject } from 'mui-file-dropzone'
+import Image from 'next/image'
 import Highlight from 'react-highlight.js'
 import { useSelector, useDispatch } from 'react-redux'
+import { makeStyles } from 'tss-react/mui'
 
 import { RepeatingOption, RepeatingOptions, Tag } from '../addTransaction/state'
 import AmountField from '../components/amountField'
@@ -46,40 +51,28 @@ import { areDistinct, computeExchangeRate, downloadTextFromUrl } from '../shared
 import { ObjectOf } from '../types'
 
 import CurrencySelect from './currencySelect'
-
-const useStyles = makeStyles((theme: Theme) => ({
-  chipField: { flex: 1 },
-  amountInput: { marginLeft: theme.spacing(1) },
+const useStyles = makeStyles()((theme: Theme) => ({
   row: {
     display: 'flex',
     alignSelf: 'stretch',
   },
   paper: {
-    '& > *:not(:first-child)': {
+    '& > *:not(:first-of-type)': {
       marginTop: theme.spacing(2),
     },
   },
-  amount: {
-    display: 'flex',
-    alignSelf: 'stretch',
-  },
   currency: { width: 105, marginLeft: theme.spacing(2) },
   dropzoneText: {
-    fontSize: 18,
-    marginTop: 10,
-    marginBottom: 10,
+    fontSize: theme.typography.body1.fontSize,
+    marginTop: theme.spacing(1.5),
+    marginBottom: theme.spacing(1.5),
     display: 'inline-block',
     verticalAlign: 'top',
     marginRight: 8,
   },
   dropzone: { minHeight: 0 },
   dropzoneIcon: { width: 25, height: 25, marginTop: 8 },
-  dropzonePreviewRemoveButton: { margin: 0 },
-  dropzonePreviewImageContainer: {
-    padding: 0,
-    flexBasis: 'unset',
-    '& > svg': { padding: 16 },
-  },
+  dropzonePreviewItemDeleteIcon: { opacity: '1 !important' },
   showFileDialogPaper: { width: '100%', maxWidth: 'unset' },
 }))
 
@@ -109,7 +102,7 @@ interface BaseProps {
   repeating: FieldProps<RepeatingOption>
   note: FieldProps<string>
   attachedFileObjects: FieldProps<FileObject[]>
-  onSubmit: (e: React.SyntheticEvent) => void
+  onSubmit: (e: SyntheticEvent) => void
 }
 
 type AddTxFormVariantProps = {
@@ -138,15 +131,33 @@ const FileContent = ({ rawContent, url, filename, isImage }: ShowFileContent) =>
   if (!url) return <>Loading...</>
 
   if (isImage) {
-    return <img src={url} alt={filename} width="100%" style={{ width: '100%' }} />
+    return (
+      <Image
+        src={url}
+        alt={filename}
+        width={800}
+        height={500}
+        css={css`
+          width: 100%;
+        `}
+      />
+    )
   }
 
-  const suffix = filename.includes('.') ? filename.substr(filename.lastIndexOf('.') + 1).toLowerCase() : null
+  const suffix = filename.includes('.') ? filename.substring(filename.lastIndexOf('.') + 1).toLowerCase() : null
 
   switch (suffix) {
     case 'html':
     case 'htm':
-      return <iframe srcDoc={rawContent} style={{ width: '100%', height: '60vh' }}></iframe>
+      return (
+        <iframe
+          srcDoc={rawContent}
+          css={css`
+            width: 100%;
+            height: 60vh;
+          `}
+        ></iframe>
+      )
     case 'json':
     case 'txt':
       return <Highlight language={suffix}>{rawContent}</Highlight>
@@ -165,14 +176,14 @@ const TransactionForm = (props: TransactionFormProps) => {
   const uploadedFiles = variant === 'edit' && (props as EditTxFormVariantProps).uploadedFiles
   const txId = variant === 'edit' && (props as EditTxFormVariantProps).id
 
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   const mainCurrency = useSelector(mainCurrencySel)
   const exchangeRates = useSelector(exchangeRatesSel)
   const userId = useSelector(currentUserIdSel)
   const settingsLoaded = useFirebaseLoaded()
   const dispatch = useDispatch()
-  const [showUploadedFile, setShowUploadedFile] = React.useState<null | ShowFileContent>(null)
+  const [showUploadedFile, setShowUploadedFile] = useState<null | ShowFileContent>(null)
 
   const { loading, error } = useRefreshExchangeRates()
 
@@ -184,18 +195,18 @@ const TransactionForm = (props: TransactionFormProps) => {
   return (
     <Paper className={classes.paper}>
       <Grid container className={classes.row}>
-        <ButtonGroup variant="contained" fullWidth>
+        <ButtonGroup variant="contained" fullWidth color="grey">
           <Button
             onClick={() => type.handler('expense')}
             variant="contained"
-            color={type.value === 'expense' ? 'primary' : 'default'}
+            color={type.value === 'expense' ? 'primary' : 'grey'}
           >
             Expense
           </Button>
           <Button
             onClick={() => type.handler('income')}
             variant="contained"
-            color={type.value === 'income' ? 'primary' : 'default'}
+            color={type.value === 'income' ? 'primary' : 'grey'}
           >
             Income
           </Button>
@@ -206,7 +217,7 @@ const TransactionForm = (props: TransactionFormProps) => {
               tagProps.onRemoveTags(redundantTagIds)
             }}
             variant="contained"
-            color={type.value === 'transfer' ? 'primary' : 'default'}
+            color={type.value === 'transfer' ? 'primary' : 'grey'}
           >
             Transfer
           </Button>
@@ -240,8 +251,19 @@ const TransactionForm = (props: TransactionFormProps) => {
         <CurrencySelect value={currency.value} className={classes.currency} onChange={currency.handler} />
       </Grid>
 
-      <Collapse in={currency.value !== mainCurrency} style={{ margin: 0 }}>
-        <Grid className={classes.row} style={{ flexWrap: 'wrap' }}>
+      <Collapse
+        in={currency.value !== mainCurrency}
+        css={css`
+          // Needed because the parent selector is too specific and adds padding for every paper child element.
+          margin-top: 0 !important;
+        `}
+      >
+        <Grid
+          className={classes.row}
+          css={css`
+            flex-wrap: wrap;
+          `}
+        >
           {settingsLoaded && (
             <>
               <Typography variant="caption">
@@ -255,21 +277,53 @@ const TransactionForm = (props: TransactionFormProps) => {
                   {mainCurrency}
                 </b>
               </Typography>
-              <Typography variant="caption" style={{ marginLeft: 8 }}>
+              <Typography
+                variant="caption"
+                css={css`
+                  margin-left: 8;
+                `}
+              >
                 <i>(rates from {exchangeRates!.date})</i>
               </Typography>
             </>
           )}
           {loading && (
             <Typography variant="caption">
-              <Loading size={15} imageStyle={{ display: 'inline', marginTop: '2px' }} />
-              <span style={{ marginLeft: 4, verticalAlign: 'super' }}>Loading fresh exchange rates</span>
+              <Loading
+                size={15}
+                cssOverrides={{
+                  image: css`
+                    display: inline;
+                    margin-top: 2px;
+                  `,
+                }}
+              />
+              <span
+                css={css`
+                  margin-left: 4px;
+                  vertical-align: super;
+                `}
+              >
+                Loading fresh exchange rates
+              </span>
             </Typography>
           )}
           {error && (
-            <Typography variant="caption" style={{ color: 'red' }}>
+            <Typography
+              variant="caption"
+              css={css`
+                color: red;
+              `}
+            >
               <ErrorOutlineIcon fontSize="small" />
-              <span style={{ marginLeft: 4, verticalAlign: 'super' }}>Couldn't refresh exchange rates</span>
+              <span
+                css={css`
+                  margin-left: 4px;
+                  vertical-align: super;
+                `}
+              >
+                Couldn't refresh exchange rates
+              </span>
             </Typography>
           )}
         </Grid>
@@ -280,6 +334,8 @@ const TransactionForm = (props: TransactionFormProps) => {
           fullWidth
           label="Note"
           value={note.value}
+          placeholder="Write something down..."
+          InputLabelProps={{ shrink: true }}
           onChange={(e) => note.handler(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') onSubmit(e)
@@ -289,7 +345,12 @@ const TransactionForm = (props: TransactionFormProps) => {
 
       {useCurrentTime && (
         <>
-          <Grid className={classes.row} style={{ justifyContent: 'start' }}>
+          <Grid
+            className={classes.row}
+            css={css`
+              justify-content: start;
+            `}
+          >
             <FormControlLabel
               control={
                 <Switch
@@ -305,7 +366,13 @@ const TransactionForm = (props: TransactionFormProps) => {
           </Grid>
 
           {/* override margin set by parent component */}
-          <Collapse in={!useCurrentTime.value} style={{ margin: 0 }}>
+          <Collapse
+            in={!useCurrentTime.value}
+            css={css`
+              // Needed because the parent selector is too specific and adds padding for every paper child element.
+              margin: 0 !important;
+            `}
+          >
             <Grid className={classes.row}>
               <DateTimePicker
                 inputFormat={DEFAULT_DATE_TIME_FORMAT}
@@ -314,7 +381,14 @@ const TransactionForm = (props: TransactionFormProps) => {
                 value={dateTime.value}
                 onChange={dateTime.handler}
                 label="Transaction date"
-                renderInput={(props) => <TextField {...props} style={{ flex: 1 }} />}
+                renderInput={(props) => (
+                  <TextField
+                    {...props}
+                    css={css`
+                      flex: 1;
+                    `}
+                  />
+                )}
               />
             </Grid>
           </Collapse>
@@ -330,17 +404,24 @@ const TransactionForm = (props: TransactionFormProps) => {
             value={dateTime.value}
             onChange={dateTime.handler}
             label="Transaction date"
-            renderInput={(props) => <TextField {...props} style={{ flex: 1 }} />}
+            renderInput={(props) => (
+              <TextField
+                {...props}
+                css={css`
+                  flex: 1;
+                `}
+              />
+            )}
           />
         </Grid>
       )}
 
       <Grid className={classes.row}>
-        <FormControl style={{ flex: 1 }}>
+        <FormControl fullWidth>
           <InputLabel htmlFor="tx-repeating">Repeating</InputLabel>
           <Select
             value={repeating.value}
-            onChange={(e) => repeating.handler(e.target.value as any)}
+            onChange={(e) => repeating.handler(e.target.value as RepeatingOption)}
             inputProps={{
               name: 'repeating',
               id: 'tx-repeating',
@@ -358,12 +439,20 @@ const TransactionForm = (props: TransactionFormProps) => {
       {uploadedFiles && (
         <List
           dense
-          subheader={<ListSubheader style={{ padding: 0, fontSize: 'small' }}>Already uploaded files</ListSubheader>}
+          subheader={
+            <ListSubheader
+              css={css`
+                padding: 0;
+                font-size: small;
+              `}
+            >
+              Already uploaded files
+            </ListSubheader>
+          }
         >
           {uploadedFiles.value.map((filename) => (
-            <ListItem
+            <ListItemButton
               key={filename}
-              button
               onClick={async () => {
                 setShowUploadedFile({ filename })
                 const success = await withErrorHandler('Unable to download file content', dispatch, async () => {
@@ -389,7 +478,11 @@ const TransactionForm = (props: TransactionFormProps) => {
               }}
             >
               <ListItemText primary={filename} />
-              <ListItemSecondaryAction style={{ right: 0 }}>
+              <ListItemSecondaryAction
+                css={css`
+                  right: 0;
+                `}
+              >
                 <IconButton
                   color="primary"
                   onClick={() => uploadedFiles.handler(uploadedFiles.value.filter((f) => f !== filename))}
@@ -397,7 +490,7 @@ const TransactionForm = (props: TransactionFormProps) => {
                   <CloseIcon />
                 </IconButton>
               </ListItemSecondaryAction>
-            </ListItem>
+            </ListItemButton>
           ))}
         </List>
       )}
@@ -417,7 +510,14 @@ const TransactionForm = (props: TransactionFormProps) => {
       )}
 
       <DropzoneAreaBase
-        showFileNames={true}
+        showPreviews={true}
+        showPreviewsInDropzone={false}
+        useChipsForPreview
+        previewText={''}
+        previewChipProps={{
+          variant: 'filled',
+          classes: { deleteIcon: classes.dropzonePreviewItemDeleteIcon },
+        }}
         filesLimit={5}
         fileObjects={attachedFileObjects.value}
         onAdd={(newFileObjects) => {
@@ -440,15 +540,11 @@ const TransactionForm = (props: TransactionFormProps) => {
         onDelete={(_fileObj, index) =>
           attachedFileObjects.handler(attachedFileObjects.value.filter((_, i) => i !== index))
         }
-        showAlerts={false} // turning this to true breaks application
+        showAlerts={false}
         classes={{
           text: classes.dropzoneText,
           icon: classes.dropzoneIcon,
           root: classes.dropzone,
-        }}
-        previewGridClasses={{
-          container: classes.dropzonePreviewRemoveButton,
-          item: classes.dropzonePreviewImageContainer,
         }}
         dropzoneText="Drag and drop file(s) or click to choose"
         onAlert={(message, severity) => {

@@ -1,13 +1,18 @@
-import React from 'react'
-
-import { ServerStyleSheets } from '@material-ui/styles'
+import createEmotionServer from '@emotion/server/create-instance'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
+
+import createEmotionCache from '../lib/createEmotionCache'
+import { robotoFont } from '../lib/theme'
 
 class MyDocument extends Document {
   render() {
     return (
-      <Html lang="en">
-        <Head />
+      <Html lang="en" className={robotoFont.className}>
+        <Head>
+          <link rel="stylesheet" href="https://highlightjs.org/static/demo/styles/idea.css" />
+          <meta name="emotion-insertion-point" content="" />
+          {(this.props as any).emotionStyleTags}
+        </Head>
         <body>
           <Main />
           <NextScript />
@@ -40,26 +45,32 @@ MyDocument.getInitialProps = async (ctx) => {
   // 3. app.render
   // 4. page.render
 
-  // Render app and page and get the context of the page with collected side effects.
-  const sheets = new ServerStyleSheets()
   const originalRenderPage = ctx.renderPage
+  const cache = createEmotionCache()
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { extractCriticalToChunks } = createEmotionServer(cache)
 
   ctx.renderPage = () =>
     originalRenderPage({
-      enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
+      enhanceApp: (App: any) => (props) => <App emotionCache={cache} {...props} />,
     })
 
   const initialProps = await Document.getInitialProps(ctx)
+  // This is important. It prevents Emotion to render invalid HTML.
+  // See https://github.com/mui/material-ui/issues/26561#issuecomment-855286153
+  const emotionStyles = extractCriticalToChunks(initialProps.html)
+  const emotionStyleTags = emotionStyles.styles.map((style) => (
+    <style
+      data-emotion={`${style.key} ${style.ids.join(' ')}`}
+      key={style.key}
+      // eslint-disable-next-line react/no-danger
+      dangerouslySetInnerHTML={{ __html: style.css }}
+    />
+  ))
 
   return {
     ...initialProps,
-    // Styles fragment is rendered after the app and page rendering finish.
-    styles: [
-      <React.Fragment key="styles">
-        {initialProps.styles}
-        {sheets.getStyleElement()}
-      </React.Fragment>,
-    ],
+    emotionStyleTags,
   }
 }
 

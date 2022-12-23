@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { getFirebase } from '../lib/firebase/firebase'
 
 async function signOut() {

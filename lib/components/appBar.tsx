@@ -1,12 +1,8 @@
-import React from 'react'
-
-import MuiAppBar from '@material-ui/core/AppBar'
-import IconButton from '@material-ui/core/IconButton'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import DeleteIcon from '@material-ui/icons/Delete'
-import DoneIcon from '@material-ui/icons/Done'
+import { css } from '@emotion/react'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import DeleteIcon from '@mui/icons-material/Delete'
+import DoneIcon from '@mui/icons-material/Done'
+import { AppBar as MuiAppBar, IconButton, Toolbar, Typography } from '@mui/material'
 import Link from 'next/link'
 
 interface AppBarProps {
@@ -22,12 +18,17 @@ const AppBar: React.FC<AppBarProps> = ({ returnUrl, onSave, onRemove, appBarTitl
       <Toolbar>
         {returnUrl && (
           <Link href={returnUrl}>
-            <IconButton edge="start" color="inherit" aria-label="back">
+            <IconButton edge="start" color="white" aria-label="back">
               <ArrowBackIcon />
             </IconButton>
           </Link>
         )}
-        <Typography variant="h6" style={{ flexGrow: 1 }}>
+        <Typography
+          variant="h6"
+          css={css`
+            flex-grow: 1;
+          `}
+        >
           {appBarTitle}
         </Typography>
         {onSave && (

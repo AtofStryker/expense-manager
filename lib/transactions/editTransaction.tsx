@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
-import { Theme, makeStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material'
 import { pick } from '@siegrift/tsfunct'
 import difference from 'lodash/difference'
-import { FileObject } from 'material-ui-dropzone'
+import { FileObject } from 'mui-file-dropzone'
 import Router, { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
+import { makeStyles } from 'tss-react/mui'
 
 import { ObjectOf } from '../../lib/types'
 import { Tag, Transaction } from '../addTransaction/state'
@@ -19,7 +20,7 @@ import { isAmountInValidFormat } from '../shared/utils'
 import { removeTx, saveTxEdit } from './actions'
 import { transactionByIdSel, tagsSel, previousTxSel } from './selectors'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   root: {
     margin: theme.spacing(2),
     justifyContent: 'center',
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignSelf: 'stretch',
   },
   paper: {
-    '& > *:not(:first-child)': {
+    '& > *:not(:first-of-type)': {
       marginTop: theme.spacing(2),
     },
   },
@@ -54,7 +55,7 @@ interface EditTransactionContentProps {
 const emptyFunction = () => {}
 
 const EditTransactionContent = ({ tx }: EditTransactionContentProps) => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const dispatch = useDispatch()
   const availableTags = useSelector(tagsSel)
   const previousTx = useSelector(previousTxSel(tx.id))

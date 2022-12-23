@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 
+import { css } from '@emotion/react'
 import { Line } from '@nivo/line'
 import addDays from 'date-fns/addDays'
 import format from 'date-fns/format'
@@ -28,28 +29,26 @@ const RecentBalance = ({ width, height, dateRange }: Props) => {
 
   const { data } = useSelector(recentBalanceDataSel(daysToDisplay, computedDateRange))
 
-  if (data.length > 500) return null
-
   const showSlice = useCallback(
     ({ slice }: any) => {
       if (!mainCurrency) return null
 
       return (
         <div
-          style={{
-            background: 'white',
-            padding: '9px 12px',
-            border: '1px solid #ccc',
-          }}
+          css={css`
+            background: white;
+            padding: 9px 12px;
+            border: 1px solid #ccc;
+          `}
         >
           {`Date: ${format(addDays(computedDateRange.start, slice.points[0].data.index), SLICE_DATE_FORMAT)}`}
           {slice.points.map((point: any) => (
             <div
               key={point.id}
-              style={{
-                color: point.serieColor,
-                padding: '3px 0',
-              }}
+              css={css`
+                color: ${point.serieColor};
+                padding: 3px 0;
+              `}
             >
               <strong>
                 {point.serieId === 'income' ? '+' : '-'}
@@ -60,14 +59,14 @@ const RecentBalance = ({ width, height, dateRange }: Props) => {
         </div>
       )
     },
-    [daysToDisplay, mainCurrency]
+    [computedDateRange.start, mainCurrency]
   )
-
+  if (data.length > 500) return null
   return (
     <div
-      style={{
-        position: 'relative' /* to make sure the toggle absolutely positioned toggle buttons are scoped */,
-      }}
+      css={css`
+        position: relative; /* to make sure the toggle absolutely positioned toggle buttons are scoped */
+      `}
     >
       <Line
         width={width}

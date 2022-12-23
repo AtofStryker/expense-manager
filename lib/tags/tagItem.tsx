@@ -1,21 +1,16 @@
-import React from 'react'
+import { memo } from 'react'
 
-import Badge from '@material-ui/core/Badge'
-import Divider from '@material-ui/core/Divider'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import { makeStyles } from '@material-ui/core/styles'
-import Tooltip from '@material-ui/core/Tooltip'
-import Typography from '@material-ui/core/Typography'
-import AutoIcon from '@material-ui/icons/BrightnessAuto'
-import EuroIcon from '@material-ui/icons/Euro'
-import NotRecentlyUsedIcon from '@material-ui/icons/EventBusy'
-import TotalTxsIcon from '@material-ui/icons/PostAddTwoTone'
-import RepeatOneIcon from '@material-ui/icons/RepeatOne'
-import TimelineIcon from '@material-ui/icons/Timeline'
-import Link from 'next/link'
+import { css } from '@emotion/react'
+import AutoIcon from '@mui/icons-material/BrightnessAuto'
+import EuroIcon from '@mui/icons-material/Euro'
+import NotRecentlyUsedIcon from '@mui/icons-material/EventBusy'
+import TotalTxsIcon from '@mui/icons-material/PostAddTwoTone'
+import RepeatOneIcon from '@mui/icons-material/RepeatOne'
+import TimelineIcon from '@mui/icons-material/Timeline'
+import { Badge, Divider, ListItemButton, ListItemText, Tooltip, Typography, Link } from '@mui/material'
 import { useSelector } from 'react-redux'
 import { ListChildComponentProps } from 'react-window'
+import { makeStyles } from 'tss-react/mui'
 
 import {
   isRecentlyUsedSel,
@@ -25,15 +20,10 @@ import {
   totalTransactionsSel,
 } from './selectors'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()({
   listItem: {
     flexDirection: 'column',
     alignItems: 'start',
-  },
-  chipField: {
-    overflow: 'auto',
-    display: 'flex',
-    width: '100%',
   },
   divider: {
     width: '100%',
@@ -62,15 +52,28 @@ const TagItem: React.FC<ListChildComponentProps> = ({ index, style }) => {
   const totalExpenseInTxs = useSelector(totalExpenseInTransactionsSel(tag.id))
   const isRecentlyUsed = useSelector(isRecentlyUsedSel(tag.id))
   const isRecurring = useSelector(isRecurringTagSel(tag.id))
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   return (
     <Link href={`/tags/details?id=${tag.id}`}>
-      <ListItem button style={style as any} className={classes.listItem} ContainerComponent="div">
-        <div style={{ display: 'flex', width: '100%' }}>
+      {/* React window uses inline styles to pass the styling to child components */}
+      {/* eslint-disable-next-line react/forbid-component-props */}
+      <ListItemButton style={style} className={classes.listItem}>
+        <div
+          css={css`
+            display: flex;
+            width: 100%;
+          `}
+        >
           <ListItemText
             primary={
-              <Typography variant="subtitle1" style={{ lineHeight: '44px' }}>
+              <Typography
+                variant="subtitle1"
+                css={css`
+                  line-height: 44px;
+                  color: black;
+                `}
+              >
                 {tag.name}
               </Typography>
             }
@@ -109,9 +112,9 @@ const TagItem: React.FC<ListChildComponentProps> = ({ index, style }) => {
           </div>
         </div>
         <Divider className={classes.divider} />
-      </ListItem>
+      </ListItemButton>
     </Link>
   )
 }
 
-export default React.memo(TagItem)
+export default memo(TagItem)

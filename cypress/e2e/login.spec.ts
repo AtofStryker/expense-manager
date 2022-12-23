@@ -22,7 +22,7 @@ describe('login', () => {
     cy.location('pathname').should('equal', '/add')
   })
 
-  it('should not show scrollbar in any resolution', () => {
+  it.only('should not show scrollbar in any resolution', () => {
     cy.visit('/login')
     cy.findAllByText('Sign in with Google')
 

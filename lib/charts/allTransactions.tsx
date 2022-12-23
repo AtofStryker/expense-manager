@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Sunburst } from '@nivo/sunburst'
 import reduce from 'lodash/reduce'
 import { useSelector } from 'react-redux'

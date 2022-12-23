@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
-import Button from '@material-ui/core/Button'
-import { Theme, makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import LogoutIcon from '@material-ui/icons/ExitToApp'
-import Alert from '@material-ui/lab/Alert'
+import { css } from '@emotion/react'
+import LogoutIcon from '@mui/icons-material/ExitToApp'
+import { Alert, Theme, Typography, Button } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
+import { makeStyles } from 'tss-react/mui'
 
 import ConfirmDialog from '../components/confirmDialog'
 import CurrencySelect from '../components/currencySelect'
@@ -26,7 +25,7 @@ import {
 import BackupFiles from './backupFiles'
 import SettingsPanel from './profileSection'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   marginBottom: {
     marginBottom: theme.spacing(1),
   },
@@ -36,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 const Profile = () => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const dispatch = useDispatch()
   const [deleteAllDataDialogOpen, setDeleteAllDataDialogOpen] = useState(false)
   const settings = useSelector(settingsSel)
@@ -46,7 +45,7 @@ const Profile = () => {
   return (
     <PageWrapper>
       <SettingsPanel name="settings">
-        {!settings && <Loading />}
+        {!settings && <Loading size={20} />}
         {settings && (
           <>
             {/* only support changing main currency if there are no transactions yet. */}
@@ -68,13 +67,21 @@ const Profile = () => {
       </SettingsPanel>
 
       <SettingsPanel name="import and export">
-        <Typography variant="subtitle2" gutterBottom style={{ textTransform: 'initial' }}>
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          css={css`
+            text-transform: initial;
+          `}
+        >
           JSON
         </Typography>
         <input
           id="choose-json-file"
           type="file"
-          style={{ display: 'none' }}
+          css={css`
+            display: none;
+          `}
           onChange={(e) => dispatch(importFromJSON(e))}
         />
         <label htmlFor="choose-json-file">
@@ -101,17 +108,31 @@ const Profile = () => {
           Export to json
         </Button>
 
-        <Typography variant="subtitle2" gutterBottom style={{ textTransform: 'initial' }}>
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          css={css`
+            text-transform: initial;
+          `}
+        >
           CSV
         </Typography>
-        <Alert severity="warning" style={{ marginBottom: 8, textTransform: 'initial' }}>
+        <Alert
+          severity="warning"
+          css={css`
+            margin-bottom: 8px;
+            text-transform: initial;
+          `}
+        >
           Exporting to CSV discards some internal information. Use this format only when you want to view the data in
           another tool (e.g. excel). For backups, prefer using the <b>JSON format</b>.
         </Alert>
         <input
           id="choose-csv-file"
           type="file"
-          style={{ display: 'none' }}
+          css={css`
+            display: none;
+          `}
           onChange={(e) => dispatch(importFromCSV(e))}
         />
         <label htmlFor="choose-csv-file">

@@ -1,4 +1,4 @@
-import { Color as NotificationSeverity } from '@material-ui/lab/Alert'
+import { AlertColor as NotificationSeverity } from '@mui/material'
 
 import { Tag, Transaction } from './addTransaction/state'
 import { Profile } from './profile/state'

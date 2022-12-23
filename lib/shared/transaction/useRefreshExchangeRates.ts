@@ -34,7 +34,7 @@ export const useRefreshExchangeRates = () => {
     } else if (fetchData.error) {
       dispatch(setSnackbarNotification(createErrorNotification(fetchData.error)))
     }
-  }, [firebaseLoaded, fetchData.data])
+  }, [firebaseLoaded, fetchData.data, fetchData.error, dispatch, profile])
 
   return fetchData
 }

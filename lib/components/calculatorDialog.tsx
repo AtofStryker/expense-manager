@@ -1,10 +1,4 @@
-import React from 'react'
-
-import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import TextField from '@material-ui/core/TextField'
+import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material'
 import { create as createMath, all as allMathFunctions } from 'mathjs'
 
 import { round } from '../shared/utils'
@@ -43,8 +37,9 @@ const CalculatorDialog = ({
       onClose={() => setShowCalc(false)}
       aria-labelledby="simple-dialog-title"
       disableEnforceFocus
-      onEscapeKeyDown={() => setShowCalc(false)}
-      onEntered={() => document.getElementById('calculator-textfield')?.focus()}
+      TransitionProps={{
+        onEntered: () => document.getElementById('calculator-textfield')?.focus(),
+      }}
       open={showCalc}
     >
       <DialogContent>

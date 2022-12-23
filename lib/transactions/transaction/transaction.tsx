@@ -1,24 +1,19 @@
-import React from 'react'
+import { FC, memo } from 'react'
 
-import Chip from '@material-ui/core/Chip'
-import Divider from '@material-ui/core/Divider'
-import IconButton from '@material-ui/core/IconButton'
-import ListItem from '@material-ui/core/ListItem'
-import { Theme, makeStyles } from '@material-ui/core/styles'
-import Tooltip from '@material-ui/core/Tooltip'
-import Typography from '@material-ui/core/Typography'
-import AttachFileIcon from '@material-ui/icons/AttachFile'
-import NoteIcon from '@material-ui/icons/Comment'
-import DeleteIcon from '@material-ui/icons/Delete'
-import EditIcon from '@material-ui/icons/Edit'
-import RepeatOneIcon from '@material-ui/icons/RepeatOne'
-import classnames from 'classnames'
+import { css } from '@emotion/react'
+import AttachFileIcon from '@mui/icons-material/AttachFile'
+import NoteIcon from '@mui/icons-material/Comment'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import RepeatOneIcon from '@mui/icons-material/RepeatOne'
+import { Chip, Divider, IconButton, ListItem, Theme, Tooltip, Typography, ListItemButton } from '@mui/material'
 import format from 'date-fns/format'
 import formatDistance from 'date-fns/formatDistance'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import { ListChildComponentProps } from 'react-window'
+import { makeStyles } from 'tss-react/mui'
 
 import { Transaction as TransactionState } from '../../addTransaction/state'
 import { DEFAULT_DATE_TIME_FORMAT } from '../../shared/constants'
@@ -28,7 +23,7 @@ import { State } from '../../state'
 import { setConfirmTxDeleteDialogOpen } from '../actions'
 import { cursorSel } from '../selectors'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   listItem: {
     flexDirection: 'column',
     alignItems: 'start',
@@ -42,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   divider: {
     width: '100%',
     marginTop: theme.spacing(1),
-    marginBottom: -theme.spacing(1),
+    marginBottom: '-' + theme.spacing(1),
   },
   listItemFirstRow: {
     display: 'flex',
@@ -61,12 +56,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: '4px 6px',
   },
   iconButton: {
-    padding: theme.spacing(1) / 2,
+    padding: theme.spacing(1 / 2),
   },
   cursor: {
     backgroundColor: 'rgba(0,0,0,0.1)',
   },
-  amountWrapper: { margin: `auto ${theme.spacing(4)}px auto 0` },
+  amountWrapper: { margin: theme.spacing('auto', 4, 'auto', 0) },
   dateTimeWrapper: { margin: 'auto' },
 }))
 
@@ -75,16 +70,16 @@ type TransactionContentProps = { tx: TransactionState; bigDevice: boolean }
 const _TransactionContent = ({ tx, bigDevice }: TransactionContentProps) => {
   const tags = useSelector((state: State) => state.tags)
   const dispatch = useDispatch()
-  const classes = useStyles()
+  const { classes } = useStyles()
 
   const Amount = (
     <div className={classes.amountWrapper}>
       <Typography
         variant="h4"
-        style={{
-          color: tx.type === 'expense' ? 'red' : tx.type === 'income' ? 'green' : 'burlywood',
-          textAlign: 'left',
-        }}
+        css={css`
+          color: ${tx.type === 'expense' ? 'red' : tx.type === 'income' ? 'green' : 'burlywood'};
+          text-align: 'left';
+        `}
       >
         {`${tx.type === 'expense' ? '-' : tx.type === 'income' ? '+' : '±'}${formatMoney(tx.amount, tx.currency)}`}
       </Typography>
@@ -92,7 +87,13 @@ const _TransactionContent = ({ tx, bigDevice }: TransactionContentProps) => {
   )
   const DateComponent = (
     <Tooltip title={format(tx.dateTime, DEFAULT_DATE_TIME_FORMAT)}>
-      <Typography variant="body1" style={{ alignSelf: 'flex-end', margin: 'auto 8px' }}>
+      <Typography
+        variant="body1"
+        css={css`
+          align-self: flex-end;
+          margin: auto 8px;
+        `}
+      >
         {`${formatDistance(tx.dateTime, new Date(), {
           includeSeconds: false,
         })} ago`}
@@ -103,7 +104,16 @@ const _TransactionContent = ({ tx, bigDevice }: TransactionContentProps) => {
   const Tags = (
     <div className={classes.chipField}>
       {tx.tagIds.map((id) => {
-        return <Chip key={id} label={tags[id].name} onDelete={null as any} style={{ margin: 2 }} />
+        return (
+          <Chip
+            key={id}
+            label={tags[id].name}
+            onDelete={null as any}
+            css={css`
+              margin: 2px;
+            `}
+          />
+        )
       })}
     </div>
   )
@@ -127,7 +137,13 @@ const _TransactionContent = ({ tx, bigDevice }: TransactionContentProps) => {
       )}
       {bigDevice && (
         <>
-          <Divider orientation="vertical" flexItem style={{ width: 2 }} />
+          <Divider
+            orientation="vertical"
+            flexItem
+            css={css`
+              width: 2px;
+            `}
+          />
           <Link href={`/transactions/details?id=${tx.id}`}>
             <Tooltip title="(E)dit transaction">
               <IconButton className={classes.iconButton} data-cy="edit-icon">
@@ -182,14 +198,14 @@ const _TransactionContent = ({ tx, bigDevice }: TransactionContentProps) => {
   }
 }
 
-export const TransactionContent = React.memo(_TransactionContent)
+export const TransactionContent = memo(_TransactionContent)
 
-const Transaction: React.FC<ListChildComponentProps> = ({
+const Transaction: FC<ListChildComponentProps> = ({
   index,
   style,
   data /* passed as itemData from react-window list (https://react-window.now.sh/#/api/FixedSizeList) */,
 }) => {
-  const classes = useStyles()
+  const { classes, cx } = useStyles()
   const tx: TransactionState = data[index]
   const bigDevice = useIsBigDevice()
   const cursor = useSelector(cursorSel)
@@ -198,10 +214,11 @@ const Transaction: React.FC<ListChildComponentProps> = ({
   if (bigDevice) {
     return (
       <ListItem
-        style={style as any}
-        className={classnames(classes.listItem, index === cursor && classes.cursor)}
+        /* React window uses inline styles to pass the styling to child components */
+        /* eslint-disable-next-line react/forbid-component-props */
+        style={style}
+        className={cx(classes.listItem, index === cursor && classes.cursor)}
         onClick={() => router.replace(`/transactions`, `/transactions#${tx.id}`)}
-        ContainerComponent="div"
         data-cy="transaction"
       >
         <TransactionContent tx={tx} bigDevice={bigDevice} />
@@ -210,18 +227,18 @@ const Transaction: React.FC<ListChildComponentProps> = ({
   } else {
     return (
       <Link href={`/transactions/details?id=${tx.id}`}>
-        <ListItem
-          style={style as any}
+        <ListItemButton
+          /* React window uses inline styles to pass the styling to child components */
+          /* eslint-disable-next-line react/forbid-component-props */
+          style={style}
           className={classes.listItem}
-          button
-          ContainerComponent="div"
           data-cy="transaction"
         >
           <TransactionContent tx={tx} bigDevice={bigDevice} />
-        </ListItem>
+        </ListItemButton>
       </Link>
     )
   }
 }
 
-export default React.memo(Transaction)
+export default memo(Transaction)

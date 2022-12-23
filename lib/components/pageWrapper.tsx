@@ -1,11 +1,6 @@
-import React from 'react'
-
-import Grid from '@material-ui/core/Grid'
-import Snackbar from '@material-ui/core/Snackbar'
-import { Theme, makeStyles } from '@material-ui/core/styles'
-import Alert from '@material-ui/lab/Alert'
-import classnames from 'classnames'
+import { Alert, Grid, Snackbar, Theme } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
+import { makeStyles } from 'tss-react/mui'
 
 import Navigation, { DRAWER_WIDTH } from '../components/navigation'
 import { setSnackbarNotification } from '../shared/actions'
@@ -16,7 +11,7 @@ import { redirectTo } from '../shared/utils'
 import ConfirmDialog from './confirmDialog'
 import { LoadingOverlay } from './loading'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   root: {
     height: 'calc(100vh - 56px)',
     ['@media (max-height:500px)']: {
@@ -44,7 +39,7 @@ interface PageWrapperProps {
 }
 
 const PageWrapper = ({ children }: PageWrapperProps) => {
-  const classes = useStyles()
+  const { classes, cx } = useStyles()
   const notification = useSelector(snackbarNotificationSel)
   const signInStatus = useSelector(signInStatusSel)
   const veryBigDevice = useIsVeryBigDevice()
@@ -52,7 +47,7 @@ const PageWrapper = ({ children }: PageWrapperProps) => {
 
   return (
     <>
-      <Grid container className={classnames(classes.root, veryBigDevice && classes.veryBigDeviceRoot)}>
+      <Grid container className={cx(classes.root, veryBigDevice && classes.veryBigDeviceRoot)}>
         {children}
         {notification && (
           <Snackbar

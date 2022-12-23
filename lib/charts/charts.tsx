@@ -1,5 +1,3 @@
-import React from 'react'
-
 import PageWrapper from '../components/pageWrapper'
 
 import AllTransactions from './allTransactions'

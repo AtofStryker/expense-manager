@@ -37,6 +37,8 @@ export const configureStore = () => {
     middlewares.push(loggerMiddleware)
   }
 
+  // TODO: Migrate to redux-toolkit or avoid global store at all
+  // eslint-disable-next-line deprecation/deprecation
   const store = createStore(rootReducer as any, getInitialState() as any, applyMiddleware(...middlewares))
 
   return store

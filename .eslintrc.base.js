@@ -23,8 +23,9 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:import/recommended',
     'plugin:import/typescript',
+    'next/core-web-vitals', // https://nextjs.org/docs/basic-features/eslint
   ],
-  plugins: ['@typescript-eslint', 'react'],
+  plugins: ['@typescript-eslint', 'react', 'deprecation'],
   rules: {
     'no-await-in-loop': 'error',
     'import/no-duplicates': 'error',

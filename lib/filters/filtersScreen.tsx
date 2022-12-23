@@ -1,26 +1,30 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 
-import Button from '@material-ui/core/Button'
-import Checkbox from '@material-ui/core/Checkbox'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Divider from '@material-ui/core/Divider'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import ListItemText from '@material-ui/core/ListItemText'
-import Paper from '@material-ui/core/Paper'
-import { makeStyles, Theme } from '@material-ui/core/styles'
-import CreateNewIcon from '@material-ui/icons/AddCircleOutline'
-import UnselectAllIcon from '@material-ui/icons/ClearAll'
-import DeleteIcon from '@material-ui/icons/Delete'
-import EditIcon from '@material-ui/icons/Edit'
+import { css } from '@emotion/react'
+import CreateNewIcon from '@mui/icons-material/AddCircleOutline'
+import UnselectAllIcon from '@mui/icons-material/ClearAll'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import {
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  List,
+  ListItemButton,
+  ListItemSecondaryAction,
+  ListItemText,
+  Paper,
+  Theme,
+} from '@mui/material'
 import { update } from '@siegrift/tsfunct'
 import Link from 'next/link'
 import Highlight from 'react-highlight.js'
 import { useDispatch, useSelector } from 'react-redux'
+import { makeStyles } from 'tss-react/mui'
 
 import ConfirmDialog from '../components/confirmDialog'
 import Loading from '../components/loading'
@@ -32,7 +36,7 @@ import { currentUserIdSel, firebaseLoadedSel } from '../shared/selectors'
 import { removeFilters } from './actions'
 import { filterFileContent, listFiltersForUser } from './filterCommons'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   buttonsWrapper: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -60,13 +64,13 @@ interface ShowFileContent {
 }
 
 const FilterFiles = () => {
-  const classes = useStyles()
-  const [listItems, setListItems] = React.useState<ListItemData[] | null | undefined>(undefined)
+  const { classes } = useStyles()
+  const [listItems, setListItems] = useState<ListItemData[] | null | undefined>(undefined)
   const firebaseLoaded = useSelector(firebaseLoadedSel)
   const userId = useSelector(currentUserIdSel)
   const dispatch = useDispatch()
-  const [showRemoveFileDialog, setShowRemoveFileDialog] = React.useState(false)
-  const [showFile, setShowFile] = React.useState<ShowFileContent | null>(null)
+  const [showRemoveFileDialog, setShowRemoveFileDialog] = useState(false)
+  const [showFile, setShowFile] = useState<ShowFileContent | null>(null)
 
   const somethingSelected = !!listItems && !listItems.find((i) => i.checked)
 
@@ -74,7 +78,7 @@ const FilterFiles = () => {
     setListItems(update(listItems!, [index, 'checked'], (val) => !val))
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!firebaseLoaded) return
     setListItems(null)
 
@@ -89,25 +93,45 @@ const FilterFiles = () => {
     }
 
     performAsyncCall()
-  }, [firebaseLoaded])
+  }, [dispatch, firebaseLoaded, userId])
 
   if (!firebaseLoaded || listItems === undefined) return null
   else if (listItems === null)
-    return <Loading size={100} text="Loading filter files..." textStyle={{ fontSize: '2.0em' }} />
+    return (
+      <Loading
+        size={100}
+        text="Loading filter files..."
+        cssOverrides={{
+          text: css`
+            font-size: 2em;
+          `,
+        }}
+      />
+    )
   else {
     return (
       <>
         <List dense>
           {!listItems.length && (
-            <Paper style={{ minHeight: 200, display: 'flex' }}>
-              <span style={{ margin: 'auto' }}>You have no filters created</span>
+            <Paper
+              css={css`
+                min-height: 200px;
+                display: flex;
+              `}
+            >
+              <span
+                css={css`
+                  margin: auto;
+                `}
+              >
+                You have no filters created
+              </span>
             </Paper>
           )}
           {listItems.map(({ filename, checked }, index) => {
             return (
-              <ListItem
+              <ListItemButton
                 key={filename}
-                button
                 onClick={async () => {
                   setShowFile({ filename, content: undefined })
                   const success = await withErrorHandler('Unable to download file content', dispatch, async () => {
@@ -124,7 +148,7 @@ const FilterFiles = () => {
                 <ListItemSecondaryAction>
                   <Checkbox edge="end" onChange={handleToggle(index)} checked={checked} />
                 </ListItemSecondaryAction>
-              </ListItem>
+              </ListItemButton>
             )
           })}
           <Divider />

@@ -1,7 +1,7 @@
-import React from 'react'
-
-import { Theme, makeStyles } from '@material-ui/core/styles'
+import { css } from '@emotion/react'
+import { Theme } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
+import { makeStyles } from 'tss-react/mui'
 
 import ConfirmDialog from '../components/confirmDialog'
 import PageWrapper from '../components/pageWrapper'
@@ -22,7 +22,7 @@ import {
 import { TransactionContent } from './transaction'
 import TransactionList from './transactionList'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   searchBar: { marginBottom: theme.spacing(2) },
 }))
 
@@ -31,7 +31,7 @@ const Transactions = () => {
   const transactions = useSelector(applySearchOnTransactions)
   const isValidQuery = useSelector(isValidQuerySel)
   const valueOptions = useSelector(valueOptionsSel)
-  const classes = useStyles()
+  const { classes } = useStyles()
   const dispatch = useDispatch()
   const confirmDeleteDialogForTx = useSelector(confirmDeleteDialogForTxSel)
 
@@ -65,17 +65,17 @@ const Transactions = () => {
             <>
               <p>Do you really want to remove the following transaction?</p>
               <div
-                style={{
-                  backgroundColor: BACKGROUND_COLOR,
-                }}
+                css={css`
+                  background-color: ${BACKGROUND_COLOR};
+                `}
               >
                 <div
-                  style={{
-                    transform: 'scale(0.7)',
-                    backgroundColor: 'white',
-                    padding: 16,
-                    borderRadius: 8,
-                  }}
+                  css={css`
+                    transform: scale(0.7);
+                    background-color: white;
+                    padding: 16px;
+                    border-radius: 8px;
+                  `}
                 >
                   <TransactionContent tx={confirmDeleteDialogForTx!} bigDevice={true} />
                 </div>

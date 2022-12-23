@@ -1,22 +1,25 @@
-import React, { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
-import Accordion from '@material-ui/core/Accordion'
-import AccordionDetails from '@material-ui/core/AccordionDetails'
-import AccordionSummary from '@material-ui/core/AccordionSummary'
-import Button from '@material-ui/core/Button'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Collapse from '@material-ui/core/Collapse'
-import IconButton from '@material-ui/core/IconButton'
-import TextField from '@material-ui/core/TextField'
-import Tooltip from '@material-ui/core/Tooltip'
-import Typography from '@material-ui/core/Typography'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import CopyIcon from '@material-ui/icons/FileCopy'
-import FormatIcon from '@material-ui/icons/FormatAlignCenter'
-import RunCode from '@material-ui/icons/PlayCircleOutline'
-import SaveIcon from '@material-ui/icons/Save'
-import Alert from '@material-ui/lab/Alert'
+import { css } from '@emotion/react'
 import type { OnMount } from '@monaco-editor/react'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import CopyIcon from '@mui/icons-material/FileCopy'
+import FormatIcon from '@mui/icons-material/FormatAlignCenter'
+import RunCode from '@mui/icons-material/PlayCircleOutline'
+import SaveIcon from '@mui/icons-material/Save'
+import {
+  Alert,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  CircularProgress,
+  Collapse,
+  IconButton,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import dynamic from 'next/dynamic'
 import Highlight from 'react-highlight.js'
 import { useDispatch, useSelector } from 'react-redux'
@@ -32,7 +35,16 @@ import { frozenFilterDataSel } from './selectors'
 
 const VALID_FILTER_NAME_PATTERN = /^[A-Za-z0-9 ]+$/
 
-const MonacoEditorLoader = () => <Loading size={50} imageStyle={{ margin: `16px auto` }} />
+const MonacoEditorLoader = () => (
+  <Loading
+    size={50}
+    cssOverrides={{
+      image: css`
+        margin: 16px auto;
+      `,
+    }}
+  />
+)
 
 const MonacoEditor = dynamic(import('@monaco-editor/react'), {
   ssr: false,
@@ -63,12 +75,12 @@ const CodeEditor = ({ initialFilterName }: Props) => {
   const dispatch = useDispatch()
   const userId = useSelector(currentUserIdSel)
 
-  React.useEffect(() => {
+  useEffect(() => {
     setPersistedFilterName(initialFilterName)
     setFilterName(initialFilterName ?? 'New profile')
   }, [initialFilterName])
 
-  React.useEffect(() => {
+  useEffect(() => {
     // unfortunately, use effect cannot use async/await
     const fn = async () => {
       if (!userId) return
@@ -96,7 +108,7 @@ const CodeEditor = ({ initialFilterName }: Props) => {
     }
 
     fn()
-  }, [userId])
+  }, [initialFilterName, userId])
 
   const validate = async () => {
     // little side effect fn to simplify the code
@@ -158,7 +170,13 @@ const CodeEditor = ({ initialFilterName }: Props) => {
   }
 
   return (
-    <div style={{ marginBottom: 16, display: 'flex', flexDirection: 'column' }}>
+    <div
+      css={css`
+        margin-bottom: 16px;
+        display: flex;
+        flex-direction: column;
+      `}
+    >
       <TextField
         variant="outlined"
         size="small"
@@ -172,10 +190,17 @@ const CodeEditor = ({ initialFilterName }: Props) => {
         }}
       />
 
-      <div style={{ display: 'flex', marginTop: 8 }}>
+      <div
+        css={css`
+          display: flex;
+          margin-top: 8px;
+        `}
+      >
         <Button
           size="small"
-          style={{ flex: 1 }}
+          css={css`
+            flex: 1;
+          `}
           variant="contained"
           color="primary"
           onClick={handleSave}
@@ -185,7 +210,10 @@ const CodeEditor = ({ initialFilterName }: Props) => {
         </Button>
         <Button
           size="small"
-          style={{ flex: 1, marginLeft: 16 }}
+          css={css`
+            flex: 1;
+            margin-left: 16px;
+          `}
           variant="contained"
           color="primary"
           onClick={handleRunCode}
@@ -196,7 +224,10 @@ const CodeEditor = ({ initialFilterName }: Props) => {
         </Button>
         <Button
           size="small"
-          style={{ flex: 1, marginLeft: 16 }}
+          css={css`
+            flex: 1;
+            margin-left: 16px;
+          `}
           variant="contained"
           color="primary"
           onClick={handleFormatCode}
@@ -207,13 +238,24 @@ const CodeEditor = ({ initialFilterName }: Props) => {
       </div>
 
       <Collapse in={showInfo}>
-        <Alert severity="info" style={{ marginTop: 8 }} onClose={() => setShowInfo(false)}>
+        <Alert
+          severity="info"
+          css={css`
+            margin-top: 8px;
+          `}
+          onClose={() => setShowInfo(false)}
+        >
           Use the code editor to create a functions, which transforms the data any way you want. This code will be
           passed to <i>eval</i> and executed on readonly state data.
         </Alert>
       </Collapse>
 
-      <Paper style={{ padding: 0, marginTop: 8 }}>
+      <Paper
+        css={css`
+          padding: 0;
+          margin-top: 8px;
+        `}
+      >
         <MonacoEditor
           height={'60vh'}
           language="javascript"
@@ -228,15 +270,15 @@ const CodeEditor = ({ initialFilterName }: Props) => {
             if (typeof initialCode === 'string') editor.setValue(initialCode)
 
             editor.onKeyDown((e: KeyboardEvent) => {
-              if (e.ctrlKey && e.keyCode === monaco.KeyCode.KEY_S) {
+              if (e.ctrlKey && e.code === monaco.KeyCode.KEY_S) {
                 e.preventDefault()
                 handleFormatCode()
                 handleSave()
               }
-              if (e.ctrlKey && e.keyCode === monaco.KeyCode.KEY_R) {
+              if (e.ctrlKey && e.code === monaco.KeyCode.KEY_R) {
                 e.preventDefault()
                 handleRunCode()
-              } else if (e.ctrlKey && e.shiftKey && e.keyCode === monaco.KeyCode.KEY_F) {
+              } else if (e.ctrlKey && e.shiftKey && e.code === monaco.KeyCode.KEY_F) {
                 e.preventDefault()
                 handleFormatCode()
               }
@@ -246,32 +288,40 @@ const CodeEditor = ({ initialFilterName }: Props) => {
       </Paper>
 
       <Accordion
-        style={{ marginTop: 1 }}
+        css={css`
+          margin-top: 1px;
+        `}
         expanded={expanded}
         onChange={() => setExpanded(!expanded)}
         TransitionProps={{ unmountOnExit: true }}
       >
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} style={{ minHeight: 40, height: 40 }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          css={css`
+            min-height: 40px;
+            height: 40px;
+          `}
+        >
           <Typography>Code output</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div
-            style={{
-              minHeight: 50,
-              maxHeight: '50vh',
-              overflow: 'auto',
-              width: '100%',
-            }}
+            css={css`
+              min-height: 50px;
+              max-height: 50vh;
+              overflow: auto;
+              width: 100%;
+            `}
           >
             <div>
               <Tooltip title="Copy editor output to clipboard">
                 <IconButton
                   color="primary"
-                  style={{
-                    position: 'absolute',
-                    right: '35px',
-                    visibility: expanded ? 'visible' : 'hidden',
-                  }}
+                  css={css`
+                    position: absolute;
+                    right: 35px;
+                    visibility: ${expanded ? 'visible' : 'hidden'};
+                  `}
                   onClick={async () => {
                     await navigator.clipboard.writeText(editorRef.current.getValue())
 

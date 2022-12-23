@@ -1,19 +1,16 @@
-import React from 'react'
-
-import { makeStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
-import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete'
+import { TextField, Autocomplete } from '@mui/material'
+import { createFilterOptions } from '@mui/material/Autocomplete'
 import { omit } from '@siegrift/tsfunct'
-import classnames from 'classnames'
 import difference from 'lodash/difference'
 import { useSelector } from 'react-redux'
+import { makeStyles } from 'tss-react/mui'
 import { v4 as uuid } from 'uuid'
 
 import { Tag } from '../addTransaction/state'
 import { currentUserIdSel } from '../shared/selectors'
 import { ObjectOf } from '../types'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()({
   root: {
     width: '100%',
   },
@@ -47,11 +44,11 @@ const TagField = ({
   onSetTagInputValue,
   onRemoveTags,
 }: TagFieldProps) => {
-  const classes = useStyles()
+  const { classes, cx } = useStyles()
   const userId = useSelector(currentUserIdSel)
 
   return (
-    <div className={classnames(classes.root, className)} data-cy="tag-field-wrapper">
+    <div className={cx(classes.root, className)} data-cy="tag-field-wrapper">
       <Autocomplete<TagFieldTag, true, true, true>
         multiple
         size="small"
@@ -61,7 +58,7 @@ const TagField = ({
         autoHighlight
         options={Object.values(tags)}
         getOptionLabel={(option) => {
-          return option?.name
+          return typeof option === 'string' ? option : option.name
         }}
         renderInput={(params) => {
           return <TextField {...params} variant="outlined" label="Transaction tags" fullWidth />

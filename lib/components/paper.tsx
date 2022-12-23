@@ -1,11 +1,8 @@
-import React from 'react'
+import { css } from '@emotion/react'
+import { Paper as MuiPaper, PaperProps as MuiPaperProps, Typography, Theme } from '@mui/material'
+import { makeStyles } from 'tss-react/mui'
 
-import MuiPaper, { PaperProps as MuiPaperProps } from '@material-ui/core/Paper'
-import { Theme, makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import classNames from 'classnames'
-
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   paper: {
     padding: theme.spacing(2),
   },
@@ -20,12 +17,19 @@ interface PaperProps extends MuiPaperProps {
 }
 
 const Paper: React.FC<PaperProps> = ({ children, label, className, listContainer, ...other }) => {
-  const classes = useStyles()
+  const { classes, cx } = useStyles()
 
   return (
-    <MuiPaper {...other} className={classNames(listContainer ? classes.listContainer : classes.paper, className)}>
+    <MuiPaper {...other} className={cx(listContainer ? classes.listContainer : classes.paper, className)}>
       {label && (
-        <Typography color="textSecondary" gutterBottom variant="subtitle1" style={{ marginTop: -6 }}>
+        <Typography
+          color="textSecondary"
+          gutterBottom
+          variant="subtitle1"
+          css={css`
+            margin-top: -6px;
+          `}
+        >
           {label}
         </Typography>
       )}

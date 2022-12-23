@@ -1,43 +1,65 @@
-import React from 'react'
+import { SerializedStyles, css, keyframes } from '@emotion/react'
+import { Typography } from '@mui/material'
+import Image from 'next/image'
 
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-
-import { ObjectOf } from '../types'
-
-const useStyles = makeStyles({
-  coin: {
-    // https://github.com/mui-org/material-ui/issues/13793#issuecomment-512202238
-    animation: '$coin-rotation 2s infinite ease-in-out',
-    display: 'block',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  '@keyframes coin-rotation': {
-    '0%': {
-      transform: 'rotateY(0deg)',
-    },
-    '100%': {
-      transform: 'rotateY(1800deg)',
-    },
-  },
-})
+// TODO: Split this file into multiple component
 
 export interface LoadingProps {
-  imageStyle?: ObjectOf<string>
-  textStyle?: ObjectOf<string>
-  size?: number
+  size: number
+  cssOverrides?: {
+    image?: SerializedStyles
+    text?: SerializedStyles
+  }
   text?: string
 }
 
-export const Loading: React.FC<LoadingProps> = ({ imageStyle, text, size, textStyle }) => {
-  const classes = useStyles()
+export interface LoadingScreenProps extends Omit<LoadingProps, 'size'> {
+  size?: number
+  cssOverrides?: {
+    image: SerializedStyles
+    text: SerializedStyles
+  }
+  text?: string
+}
 
+// Unfortunately, we need to use custom formatting for keyframes. See:
+// https://github.com/prettier/prettier/issues/13774.
+const coinRotation = keyframes`
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(1440deg); // 4 spins (360 degrees * 4)
+  }
+`
+
+export const Loading: React.FC<LoadingProps> = ({ cssOverrides, text, size }) => {
   return (
     <>
-      <img src="../static/coin.svg" alt="coin" style={{ width: `${size}px`, ...imageStyle }} className={classes.coin} />
+      <Image
+        src="/static/coin.svg"
+        width={size}
+        height={size}
+        alt="rotating coin loading image"
+        css={css`
+          // https://github.com/mui-org/material-ui/issues/13793#issuecomment-512202238
+          animation: ${coinRotation} 2s infinite ease-in-out;
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          width: ${size}px;
+          ${cssOverrides?.image}
+        `}
+      />
       {text && (
-        <Typography variant="h3" gutterBottom style={{ textAlign: 'center', ...textStyle }}>
+        <Typography
+          variant="h3"
+          gutterBottom
+          css={css`
+            text-align: center;
+            ${cssOverrides?.text}
+          `}
+        >
           {text}
         </Typography>
       )}
@@ -45,11 +67,21 @@ export const Loading: React.FC<LoadingProps> = ({ imageStyle, text, size, textSt
   )
 }
 
-export const LoadingScreen = (props?: LoadingProps) => (
+export const LoadingScreen = (props?: LoadingScreenProps) => (
   <Loading
-    imageStyle={{ marginTop: '20vh', width: '40vh' }}
+    cssOverrides={{
+      image: css`
+        margin-top: 20vh;
+        width: clamp(15px, 45vw, 35vh);
+      `,
+      text: css`
+        margin-top: 10vh;
+      `,
+    }}
+    // TODO: Remove size prop, we need to use cssOverrides instead as it's more expressive (we can clam the size based
+    // on the screen size)
+    size={0}
     text="Loading..."
-    textStyle={{ marginTop: '10vh' }}
     {...props}
   />
 )
@@ -57,15 +89,15 @@ export const LoadingScreen = (props?: LoadingProps) => (
 export const LoadingOverlay = () => {
   return (
     <div
-      style={{
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        left: 0,
-        top: 0,
-        display: 'flex',
-        backgroundColor: `rgba(0,0,0,0.4)`,
-      }}
+      css={css`
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        display: flex;
+        background-color: rgba(0, 0, 0, 0.4);
+      `}
     >
       <Loading size={150} />
     </div>
