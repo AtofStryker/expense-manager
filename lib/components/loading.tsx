@@ -48,6 +48,7 @@ export const Loading: React.FC<LoadingProps> = ({ cssOverrides, text, size }) =>
           margin-left: auto;
           margin-right: auto;
           width: ${size}px;
+          height: ${size}px;
           ${cssOverrides?.image}
         `}
       />

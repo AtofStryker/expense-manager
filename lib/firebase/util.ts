@@ -1,10 +1,19 @@
 import { getFirebase } from '../firebase/firebase'
 
+// Initially we used signInWithRedirect, but it doesn't work on Firefox, Safari and Iphone. See:
+// https://github.com/firebase/firebase-js-sdk/issues/6716 (issue describing the problem)
+// https://firebase.google.com/docs/auth/web/redirect-best-practices (official firebase recommendations)
+// https://github.com/firebase/firebase-js-sdk/issues/6443#issuecomment-1187798276 (other workarounds)
+//
+// In particular, I was tempted to use a workaround described in:
+// https://github.com/firebase/firebase-js-sdk/issues/6716#issuecomment-1331981547 But it turns out that it doesn't work
+// on localhost.
+//
+// At the end I've decided to use signInWithPopup, which works on all browsers, but does not work on mobile.
 export async function signIn() {
-  // Sign into Firebase using popup auth & Google as the identity provider.
   const firebase = getFirebase()
   const provider = new firebase.auth.GoogleAuthProvider()
-  await firebase.auth().signInWithRedirect(provider)
+  await firebase.auth().signInWithPopup(provider)
 }
 
 export async function signUpWithEmailAndPassword(email: string, password: string) {

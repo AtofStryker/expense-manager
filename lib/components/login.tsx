@@ -149,7 +149,8 @@ const Login = () => {
             src="/static/coin.svg"
             alt="coin"
             css={css`
-              width: 40vh;
+              width: min(25vh, 50vw);
+              height: min(25vh, 50vw);
               margin: auto;
               margin-top: 10vh;
               display: block;

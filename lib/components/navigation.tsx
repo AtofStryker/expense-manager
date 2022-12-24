@@ -200,7 +200,6 @@ const Navigation = () => {
             src="/static/coin.svg"
             alt="coin"
             css={css`
-              width: 35px;
               margin: 0 8px;
             `}
           />

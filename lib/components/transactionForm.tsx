@@ -149,6 +149,7 @@ const FileContent = ({ rawContent, url, filename, isImage }: ShowFileContent) =>
         height={500}
         css={css`
           width: 100%;
+          height: auto;
         `}
       />
     )

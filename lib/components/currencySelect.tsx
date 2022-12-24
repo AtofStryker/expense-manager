@@ -31,7 +31,7 @@ const CurrencySelect = ({ value, onChange, label, className }: CurrencySelectPro
               <Image
                 src={`/static/${value.toLowerCase()}.png`}
                 width={24}
-                height={24}
+                height={18}
                 css={css`
                   margin-right: 8px;
                 `}
