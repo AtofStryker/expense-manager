@@ -4,6 +4,8 @@ import { css, SerializedStyles } from '@emotion/react'
 import { Typography } from '@mui/material'
 import dynamic from 'next/dynamic'
 
+import { useIsBigDevice } from '../shared/hooks'
+
 type Variant = 'light' | 'dark'
 type Size = 'small' | 'medium'
 
@@ -47,7 +49,9 @@ const HotkeyLabel: FC<Props> = (props) => {
       background-color: rgb(225, 230, 239);
     `,
   }
+  const isBigDevice = useIsBigDevice()
 
+  if (!isBigDevice) return null
   if (!ctrlKey) {
     return (
       <Typography

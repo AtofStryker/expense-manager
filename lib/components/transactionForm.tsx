@@ -26,7 +26,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { DateTimePicker, DatePicker, TimePicker } from '@mui/x-date-pickers'
+import { DatePicker, TimePicker } from '@mui/x-date-pickers'
 import { addDays, addMinutes, getMinutes, setMinutes, subDays, subMinutes } from 'date-fns'
 import { DropzoneAreaBase, FileObject } from 'mui-file-dropzone'
 import Image from 'next/image'
@@ -41,7 +41,7 @@ import Paper from '../components/paper'
 import TagField from '../components/tagField'
 import { getStorageRef } from '../firebase/firebase'
 import { setSnackbarNotification, withErrorHandler } from '../shared/actions'
-import { DEFAULT_DATE_FORMAT, DEFAULT_DATE_TIME_FORMAT, DEFAULT_TIME_FORMAT } from '../shared/constants'
+import { DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT } from '../shared/constants'
 import { Currency, CURRENCIES } from '../shared/currencies'
 import { useFirebaseLoaded } from '../shared/hooks'
 import { mainCurrencySel, exchangeRatesSel, currentUserIdSel } from '../shared/selectors'
@@ -379,6 +379,7 @@ const TransactionForm = (props: TransactionFormProps) => {
               `}
               onKeyDown={(e) => {
                 if (!dateTime.value) return
+                if (e.key === 'Enter') return onSubmit(e)
 
                 switch (e.key) {
                   case 'ArrowUp':
@@ -422,6 +423,7 @@ const TransactionForm = (props: TransactionFormProps) => {
               `}
               onKeyDown={(e) => {
                 if (!dateTime.value) return
+                if (e.key === 'Enter') return onSubmit(e)
 
                 const minutesAddition = 15
                 const roundMinutes = (date: Date) => {
@@ -448,28 +450,6 @@ const TransactionForm = (props: TransactionFormProps) => {
           )}
         />
       </Grid>
-
-      {variant === 'edit' && (
-        <Grid className={classes.row}>
-          <DateTimePicker
-            inputFormat={DEFAULT_DATE_TIME_FORMAT}
-            ampm={false}
-            disableFuture
-            value={dateTime.value}
-            onChange={dateTime.handler}
-            label="Datetime"
-            renderInput={(props) => (
-              <TextField
-                {...props}
-                InputLabelProps={{ shrink: true }}
-                css={css`
-                  flex: 1;
-                `}
-              />
-            )}
-          />
-        </Grid>
-      )}
 
       <Grid className={classes.row}>
         <FormControl fullWidth>
