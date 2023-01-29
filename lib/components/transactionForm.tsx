@@ -30,7 +30,6 @@ import { DatePicker, TimePicker } from '@mui/x-date-pickers'
 import { addDays, addMinutes, getMinutes, setMinutes, subDays, subMinutes } from 'date-fns'
 import { getDownloadURL, getMetadata, getStorage, ref } from 'firebase/storage'
 import { DropzoneAreaBase, FileObject } from 'mui-file-dropzone'
-import Image from 'next/image'
 import Highlight from 'react-highlight.js'
 import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from 'tss-react/mui'
@@ -143,14 +142,19 @@ const FileContent = ({ rawContent, url, filename, isImage }: ShowFileContent) =>
 
   if (isImage) {
     return (
-      <Image
+      // We are not using the Image component from next.js because the domain from which the image is loaded needs to be
+      // whitelisted in the next.config.js file and it needs to support sending the image with different resolutions.
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
         src={url}
         alt={filename}
-        width={800}
-        height={500}
+        // The image is user uploaded and we don't know its size and aspect ratio so we can't set the width and height
+        // attributes. Instead, we display the image in its original size and let the browser scale it down to fit the
+        // container.
         css={css`
-          width: 100%;
-          height: auto;
+          object-fit: scale-down;
+          max-width: 100%;
+          max-height: 100%;
         `}
       />
     )
@@ -380,7 +384,11 @@ const TransactionForm = (props: TransactionFormProps) => {
               `}
               onKeyDown={(e) => {
                 if (!dateTime.value) return
-                if (e.key === 'Enter') return onSubmit(e)
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  return onSubmit(e)
+                }
 
                 switch (e.key) {
                   case 'ArrowUp':
@@ -424,7 +432,11 @@ const TransactionForm = (props: TransactionFormProps) => {
               `}
               onKeyDown={(e) => {
                 if (!dateTime.value) return
-                if (e.key === 'Enter') return onSubmit(e)
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  return onSubmit(e)
+                }
 
                 const minutesAddition = 15
                 const roundMinutes = (date: Date) => {
@@ -550,6 +562,8 @@ const TransactionForm = (props: TransactionFormProps) => {
         showPreviewsInDropzone={false}
         useChipsForPreview
         previewText={''}
+        // Max file size is 30MB (the default is 3MB)
+        maxFileSize={30 * 1024 * 1024}
         previewChipProps={{
           variant: 'filled',
           classes: { deleteIcon: classes.dropzonePreviewItemDeleteIcon },

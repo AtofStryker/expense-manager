@@ -51,7 +51,11 @@ const ExpenseManagerApp = (props: ExpenseManagerAppProps) => {
             <title>{PROJECT_TITLE}</title>
             <meta charSet="utf-8" />
             {/* Use minimum-scale=1 to enable GPU rasterization */}
-            <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
+            {/* Enable viewport-fit cover to use all on screen space and enable CSS `env()` function. See: https://developer.mozilla.org/en-US/docs/Web/CSS/env */}
+            <meta
+              name="viewport"
+              content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover"
+            />
             {/* PWA primary color */}
             <meta name="theme-color" content="#a5790a" />
             {/* Page favicon */}

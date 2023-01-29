@@ -13,7 +13,7 @@ import { LoadingOverlay } from './loading'
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
-    height: 'calc(100vh - 56px)',
+    height: 'calc(100vh - 56px - calc(env(safe-area-inset-bottom)))',
     ['@media (max-height:500px)']: {
       height: 'calc(100vh)',
     },

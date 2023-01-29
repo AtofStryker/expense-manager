@@ -46,6 +46,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     overflowX: 'auto',
     whiteSpace: 'nowrap',
     justifyContent: 'space-between',
+    color: theme.palette.text.primary,
   },
   listItemSecondRow: { display: 'flex', width: '100%', flexDirection: 'row' },
   iconPanel: {
