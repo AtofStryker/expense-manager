@@ -1,8 +1,7 @@
-import { getFirebase } from '../lib/firebase/firebase'
+import { getAuth } from 'firebase/auth'
 
 async function signOut() {
-  // Sign out of Firebase
-  await getFirebase().auth().signOut()
+  await getAuth().signOut()
 }
 
 const Logout = () => {

@@ -1,12 +1,13 @@
 import { set } from '@siegrift/tsfunct'
 import { addDays, isBefore, parse } from 'date-fns'
+import { User } from 'firebase/auth'
+import { getDocsFromCache, getFirestore, onSnapshot, onSnapshotsInSync, QuerySnapshot } from 'firebase/firestore'
 import zip from 'lodash/zip'
 import { batch } from 'react-redux'
 
 import { addRepeatingTxs } from '../actions'
 import { setFiltersState, setFiltersError } from '../filters/actions'
 import { filterFileContent, listFiltersForUser } from '../filters/filterCommons'
-import { getFirebase } from '../firebase/firebase'
 import { uploadBackup } from '../profile/backupActions'
 import {
   listBackupFilesForUser,
@@ -23,9 +24,9 @@ import { FirestoneQuery, getQueries } from './firestoneQueries'
 
 export const firestoneChangeAction = (
   query: FirestoneQuery,
-  payload: firebase.firestore.QuerySnapshot,
+  payload: QuerySnapshot,
   isInitial = false
-): Action<firebase.firestore.QuerySnapshot> => ({
+): Action<QuerySnapshot> => ({
   type: `${isInitial ? 'Initial firestore' : 'Firestore'} query change: ${query.type}`,
   payload,
   reducer: (state) => {
@@ -33,14 +34,14 @@ export const firestoneChangeAction = (
   },
 })
 
-const changeSignInStatus = (status: SignInStatus, user: firebase.User | null): Action<SignInStatus> => ({
+const changeSignInStatus = (status: SignInStatus, user: User | null): Action<SignInStatus> => ({
   type: 'Change sign in status and set user',
   payload: status,
   reducer: (state) => ({ ...state, signInStatus: status, user }),
 })
 
 export const authChangeAction =
-  (status: SignInStatus, user: firebase.User | null): Thunk =>
+  (status: SignInStatus, user: User | null): Thunk =>
   async (dispatch, _getState, { logger }) => {
     logger.log(`Auth changed: ${status}`)
 
@@ -57,7 +58,7 @@ export const authChangeAction =
  * Applies initial such that this state exists even when the app is opened
  * for the first time.
  */
-const applyInitialState = (user: firebase.User): Action => ({
+const applyInitialState = (user: User): Action => ({
   type: 'Apply initial state',
   reducer: (state) => {
     const profileState = getInitialProfileState(user)
@@ -68,9 +69,7 @@ const applyInitialState = (user: firebase.User): Action => ({
 const initializeFirebaseEssentials = (): Thunk => async (dispatch) => {
   const queries = getQueries().filter((q) => q.essential)
   const initialQueries = queries.map((query) => {
-    return query.createFirestoneQuery().get({
-      source: 'cache',
-    })
+    return getDocsFromCache(query.createFirestoneQuery())
   })
 
   // load data from cache
@@ -81,13 +80,11 @@ const initializeFirebaseEssentials = (): Thunk => async (dispatch) => {
 }
 
 const initializeFirebaseLazy =
-  (user: firebase.User): Thunk =>
+  (user: User): Thunk =>
   async (dispatch) => {
     const queries = getQueries()
     const initialQueries = queries.map((query) => {
-      return query.createFirestoneQuery().get({
-        source: 'cache',
-      })
+      return getDocsFromCache(query.createFirestoneQuery())
     })
 
     // load data from cache
@@ -119,9 +116,7 @@ const initializeFirebaseLazy =
       if (navigator.onLine) {
         const freshQueriesData = await Promise.all(
           queries.map((query) => {
-            return query.createFirestoneQuery().get({
-              source: 'server',
-            })
+            return getDocsFromCache(query.createFirestoneQuery())
           })
         )
         batch(() => {
@@ -152,20 +147,19 @@ const initializeFirebaseLazy =
     } catch {}
 
     let actions: Array<Parameters<typeof firestoneChangeAction>> = []
-    getFirebase()
-      .firestore()
-      .onSnapshotsInSync(() => {
-        // https://react-redux.js.org/api/batch
-        // treat the redux updates as one atomic operation and forbid rendering between the updates
-        // (which can render transaction with tag that hasn't been loaded yet)
-        batch(() => {
-          actions.forEach((a) => dispatch(firestoneChangeAction(a[0], a[1])))
-          actions = []
-        })
+    const firestore = getFirestore()
+    onSnapshotsInSync(firestore, () => {
+      // https://react-redux.js.org/api/batch
+      // treat the redux updates as one atomic operation and forbid rendering between the updates
+      // (which can render transaction with tag that hasn't been loaded yet)
+      batch(() => {
+        actions.forEach((a) => dispatch(firestoneChangeAction(a[0], a[1])))
+        actions = []
       })
+    })
 
     queries.forEach((q) => {
-      q.createFirestoneQuery().onSnapshot((change) => {
+      onSnapshot(q.createFirestoneQuery(), (change) => {
         actions.push([q, change])
       })
     })

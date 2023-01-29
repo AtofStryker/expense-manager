@@ -1,5 +1,4 @@
-import firebase from 'firebase/app'
-import 'firebase/firestore'
+import { Timestamp } from 'firebase/firestore'
 
 const createTags = (uid: string) => [
   {
@@ -28,9 +27,7 @@ const createTransactions = (uid: string) => [
     amount: 16.4,
     transactionType: 'fromUser',
     currency: 'EUR',
-    dateTime: firebase.firestore.Timestamp.fromDate(
-      new Date('Mon May 20 2020 09:05:18 GMT+0200 (Central European Summer Time)')
-    ),
+    dateTime: Timestamp.fromDate(new Date('Mon May 20 2020 09:05:18 GMT+0200 (Central European Summer Time)')),
     type: 'expense',
     note: 'A test note',
     tagIds: ['83d3aaa6-8012-4504-a538-c47ad43af6e8', '1febaa0c-3857-4ae6-abf2-e30a1970396a'],

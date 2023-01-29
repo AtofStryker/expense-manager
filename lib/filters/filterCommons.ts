@@ -1,12 +1,12 @@
-import { getStorageRef } from '../firebase/firebase'
-import { firestoreFileContent } from '../firebase/firestore'
+import { getStorage, listAll, ref } from 'firebase/storage'
+
+import { firestoreFileContent, formatStoragePath } from '../firebase/firestore'
 import { REQUEST_TIMEOUT_ERROR } from '../shared/constants'
 import { delay } from '../shared/utils'
 
 export const listFiltersForUser = (userId: string) => {
-  const listFilesPromise = getStorageRef(userId, 'filters')
-    .listAll()
-    .then((res) => res.items.map((itemRef) => itemRef.name))
+  const storageRef = ref(getStorage(), formatStoragePath(userId, 'filters'))
+  const listFilesPromise = listAll(storageRef).then((res) => res.items.map((itemRef) => itemRef.name))
 
   return Promise.all([
     Promise.race([listFilesPromise, delay(5 * 1000)]), // max wait time is 5s

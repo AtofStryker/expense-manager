@@ -15,7 +15,7 @@ export const CURRENCIES = {
 }
 
 export type Currency = keyof typeof CURRENCIES
-export type CurrencyValue = typeof CURRENCIES['EUR']
+export type CurrencyValue = (typeof CURRENCIES)['EUR']
 
 export const DEFAULT_CURRENCY: Currency = 'EUR'
 

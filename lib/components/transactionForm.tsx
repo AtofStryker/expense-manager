@@ -28,6 +28,7 @@ import {
 } from '@mui/material'
 import { DatePicker, TimePicker } from '@mui/x-date-pickers'
 import { addDays, addMinutes, getMinutes, setMinutes, subDays, subMinutes } from 'date-fns'
+import { getDownloadURL, getMetadata, getStorage, ref } from 'firebase/storage'
 import { DropzoneAreaBase, FileObject } from 'mui-file-dropzone'
 import Image from 'next/image'
 import Highlight from 'react-highlight.js'
@@ -39,7 +40,7 @@ import AmountField from '../components/amountField'
 import { Loading } from '../components/loading'
 import Paper from '../components/paper'
 import TagField from '../components/tagField'
-import { getStorageRef } from '../firebase/firebase'
+import { formatStoragePath } from '../firebase/firestore'
 import { setSnackbarNotification, withErrorHandler } from '../shared/actions'
 import { DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT } from '../shared/constants'
 import { Currency, CURRENCIES } from '../shared/currencies'
@@ -491,10 +492,10 @@ const TransactionForm = (props: TransactionFormProps) => {
               onClick={async () => {
                 setShowUploadedFile({ filename })
                 const success = await withErrorHandler('Unable to download file content', dispatch, async () => {
-                  const ref = getStorageRef(userId!, 'files', txId as string, filename)
-                  const url = await ref.getDownloadURL()
+                  const storageRef = ref(getStorage(), formatStoragePath(userId!, 'files', txId as string, filename))
+                  const url = await getDownloadURL(storageRef)
 
-                  const type = (await ref.getMetadata())?.contentType
+                  const type = (await getMetadata(storageRef))?.contentType
                   if (typeof type === 'string' && type.startsWith('image')) {
                     setShowUploadedFile({ filename, url, isImage: true })
                     return true

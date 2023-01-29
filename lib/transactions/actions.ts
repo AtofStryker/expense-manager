@@ -1,10 +1,11 @@
 import { set } from '@siegrift/tsfunct'
+import { deleteObject, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { difference } from 'lodash'
 import Router from 'next/router'
 
 import { removeFromFirebase, uploadToFirebase } from '../actions'
 import { Transaction, Tag } from '../addTransaction/state'
-import { getStorageRef } from '../firebase/firebase'
+import { formatStoragePath } from '../firebase/firestore'
 import { Action, Thunk } from '../redux/types'
 import { createSuccessNotification, setSnackbarNotification, withErrorHandler } from '../shared/actions'
 import { currentUserIdSel } from '../shared/selectors'
@@ -23,14 +24,17 @@ export const saveTxEdit =
     // TODO: what to do with tags that are not in any expense (deleted by edit)
     const tx: Transaction = { ...originalTx, ...editedFields }
     tx.attachedFiles = (tx.attachedFiles ?? []).concat(newFiles.map((f) => f.name))
-    const storageRef = getStorageRef(userId, 'files', originalTx.id)
+    const storageRef = ref(getStorage(), formatStoragePath(userId, 'files', originalTx.id))
     let success: boolean | undefined
 
     // remove user selected uploaded files from storage
     success = await withErrorHandler('Failed to remove attached files', dispatch, async () => {
       const toRemove = difference(originalTx.attachedFiles, editedFields.attachedFiles!)
 
-      const promises = toRemove.map((filename) => storageRef.child(filename).delete())
+      const promises = toRemove.map((filename) => {
+        const fileToRemove = ref(storageRef, filename)
+        deleteObject(fileToRemove)
+      })
       await Promise.all(promises)
       return true
     })
@@ -40,7 +44,7 @@ export const saveTxEdit =
       success = await withErrorHandler('Failed to upload new attached files', dispatch, async () => {
         const fileUploads = newFiles.map(async (file) =>
           // TODO: handle duplicate filenames
-          storageRef.child(file.name).put(file)
+          uploadBytesResumable(ref(storageRef, file.name), file)
         )
         await Promise.all(fileUploads)
         return true
@@ -66,10 +70,12 @@ export const removeTx =
 
     const userId = currentUserIdSel(getState())!
     const tx = getState().transactions[txId]
-    const storageRef = getStorageRef(userId, 'files', txId)
+    const storageRef = ref(getStorage(), formatStoragePath(userId, 'files', txId))
 
     let success = await withErrorHandler('Failed to remove attached files', dispatch, async () => {
-      const promises = tx.attachedFiles?.map((filename) => storageRef.child(filename).delete())
+      const promises = tx.attachedFiles?.map((filename) => {
+        return deleteObject(ref(storageRef, filename))
+      })
 
       await Promise.all(promises ?? [])
       return true

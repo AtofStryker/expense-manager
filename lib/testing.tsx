@@ -1,6 +1,7 @@
 import { ThemeProvider } from '@mui/material/styles'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { FirebaseApp } from 'firebase/app'
 import firebasemock from 'firebase-mock'
 import { Provider as ReduxProvider } from 'react-redux'
 import { Store, applyMiddleware, createStore } from 'redux'
@@ -40,7 +41,7 @@ export const configureTestStore = (state: Partial<State> = getInitialState()) =>
 
 export const byAriaLabel = (value: string) => `[aria-label="${value}"]`
 
-type ExtendedGlobal = typeof globalThis & { mockFirebase: firebase.app.App }
+type ExtendedGlobal = typeof globalThis & { mockFirebase: FirebaseApp }
 
 export const initializeMockFirebase = () => {
   const mockauth = new firebasemock.MockAuthentication()

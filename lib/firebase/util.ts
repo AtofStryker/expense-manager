@@ -1,5 +1,3 @@
-import { getFirebase } from '../firebase/firebase'
-
 // Initially we used signInWithRedirect, but it doesn't work on Firefox, Safari and Iphone. See:
 // https://github.com/firebase/firebase-js-sdk/issues/6716 (issue describing the problem)
 // https://firebase.google.com/docs/auth/web/redirect-best-practices (official firebase recommendations)
@@ -9,25 +7,32 @@ import { getFirebase } from '../firebase/firebase'
 // https://github.com/firebase/firebase-js-sdk/issues/6716#issuecomment-1331981547 But it turns out that it doesn't work
 // on localhost.
 //
+
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword as signInWithEmailAndPasswordFirebase,
+} from 'firebase/auth'
+import { Timestamp } from 'firebase/firestore'
+
 // At the end I've decided to use signInWithPopup, which works on all browsers, but does not work on mobile.
 export async function signIn() {
-  const firebase = getFirebase()
-  const provider = new firebase.auth.GoogleAuthProvider()
-  await firebase.auth().signInWithPopup(provider)
+  const provider = new GoogleAuthProvider()
+  await signInWithPopup(getAuth(), provider)
 }
 
 export async function signUpWithEmailAndPassword(email: string, password: string) {
-  const firebase = getFirebase()
-  return firebase.auth().createUserWithEmailAndPassword(email, password)
+  return createUserWithEmailAndPassword(getAuth(), email, password)
 }
 
 export async function signInWithEmailAndPassword(email: string, password: string) {
-  const firebase = getFirebase()
-  return firebase.auth().signInWithEmailAndPassword(email, password)
+  return signInWithEmailAndPasswordFirebase(getAuth(), email, password)
 }
 
 export const convertTimestampsToDates = (value: any): any => {
-  if (value instanceof getFirebase().firestore.Timestamp) {
+  if (value instanceof Timestamp) {
     return value.toDate()
   } else if (Array.isArray(value)) {
     return value.map((v) => convertTimestampsToDates(v))

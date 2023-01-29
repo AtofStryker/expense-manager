@@ -198,6 +198,7 @@ const Navigation = () => {
             width={35}
             height={35}
             src="/static/coin.svg"
+            priority
             alt="coin"
             css={css`
               margin: 0 8px;

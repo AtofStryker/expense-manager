@@ -1,5 +1,6 @@
-import { getStorageRef } from '../firebase/firebase'
-import { removeFiles } from '../firebase/firestore'
+import { getStorage, ref, uploadString } from 'firebase/storage'
+
+import { formatStoragePath, removeFiles } from '../firebase/firestore'
 import { Thunk } from '../redux/types'
 import { createSuccessNotification, setSnackbarNotification, withErrorHandler } from '../shared/actions'
 import { UPLOADING_DATA_ERROR } from '../shared/constants'
@@ -18,7 +19,7 @@ export const uploadBackup =
     const jsonData = jsonFromDataSel(getState())
 
     withErrorHandler(UPLOADING_DATA_ERROR, dispatch, async () => {
-      await getStorageRef(userId!, 'backup', filename).putString(jsonData)
+      await uploadString(ref(getStorage(), formatStoragePath(userId!, 'backup', filename)), jsonData)
       dispatch(setSnackbarNotification(createSuccessNotification('Backup successful')))
     })
   }

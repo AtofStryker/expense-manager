@@ -1,7 +1,7 @@
 import { set } from '@siegrift/tsfunct'
+import { collection, getDocs, getFirestore, limit, query, where, writeBatch } from 'firebase/firestore'
 
 import { uploadToFirebase } from '../actions'
-import { getFirebase } from '../firebase/firebase'
 import { Action, Thunk } from '../redux/types'
 import {
   createErrorNotification,
@@ -83,11 +83,11 @@ export const clearAllData =
     const removeColl = async (name: string) => {
       let stopRemove = false
       while (!stopRemove) {
-        const batch = getFirebase().firestore().batch()
+        const firestore = getFirestore()
+        const batch = writeBatch(firestore)
 
-        // this is the only way to remove all of the data
         // eslint-disable-next-line
-        const q = await getFirebase().firestore().collection(name).where('uid', '==', userId).limit(500).get()
+        const q = await getDocs(query(collection(firestore, name), where('uid', '==', userId), limit(500)))
 
         if (q.size > 0) {
           q.docs.forEach((d) => batch.delete(d.ref))

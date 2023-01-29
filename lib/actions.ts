@@ -4,11 +4,11 @@ import addMonths from 'date-fns/addMonths'
 import addWeeks from 'date-fns/addWeeks'
 import addYears from 'date-fns/addYears'
 import isBefore from 'date-fns/isBefore'
+import { collection, writeBatch, doc, CollectionReference, getFirestore } from 'firebase/firestore'
 import chunk from 'lodash/chunk'
 import { v4 as uuid } from 'uuid'
 
 import { Tag, Transaction } from './addTransaction/state'
-import { getFirebase } from './firebase/firebase'
 import { Profile } from './profile/state'
 import { Action, Thunk } from './redux/types'
 import { createErrorNotification, setSnackbarNotification } from './shared/actions'
@@ -19,7 +19,7 @@ import { ScreenTitle } from './state'
 import { FirebaseField, ObjectOf } from './types'
 
 type CollectionType = 'tags' | 'transactions' | 'profile'
-type FirebaseCollections = { [key in CollectionType]: any }
+type FirebaseCollections = { [key in CollectionType]: CollectionReference }
 type UploadEntry<C extends CollectionType, T extends FirebaseField> = {
   coll: C
   data: T
@@ -35,21 +35,24 @@ export const setCurrentScreen = (screen: ScreenTitle): Action<ScreenTitle> => ({
   reducer: (state) => set(state, ['currentScreen'], screen),
 })
 
+// Firebase transactions and batch writes are limited to 500 operations per batch.
+// Read more in: https://firebase.google.com/docs/firestore/manage-data/transactions
 const MAX_WRITES_IN_BATCH = 500
 
 const privateUpload = (
   entries: Array<UploadEntry<'tags', Tag> | UploadEntry<'transactions', Transaction> | UploadEntry<'profile', Profile>>
 ) => {
-  const colls: FirebaseCollections = {
-    tags: getFirebase().firestore().collection('tags'),
-    transactions: getFirebase().firestore().collection('transactions'),
-    profile: getFirebase().firestore().collection('profile'),
+  const firestore = getFirestore()
+  const collections: FirebaseCollections = {
+    tags: collection(firestore, 'tags'),
+    transactions: collection(firestore, 'transactions'),
+    profile: collection(firestore, 'profile'),
   }
 
   return chunk(entries, MAX_WRITES_IN_BATCH).map((ch) => {
-    const batch = getFirebase().firestore().batch()
+    const batch = writeBatch(firestore)
     ch.forEach(({ data, coll }) => {
-      const ref = colls[coll].doc(data.id)
+      const ref = doc(collections[coll], data.id)
       batch.set(ref, data)
     })
 
@@ -58,16 +61,17 @@ const privateUpload = (
 }
 
 const privateRemove = (entries: Array<RemoveEntry<'tags'> | RemoveEntry<'transactions'>>) => {
-  const colls: FirebaseCollections = {
-    tags: getFirebase().firestore().collection('tags'),
-    transactions: getFirebase().firestore().collection('transactions'),
-    profile: getFirebase().firestore().collection('profile'),
+  const firestore = getFirestore()
+  const collections: FirebaseCollections = {
+    tags: collection(firestore, 'tags'),
+    transactions: collection(firestore, 'transactions'),
+    profile: collection(firestore, 'profile'),
   }
 
   return chunk(entries, MAX_WRITES_IN_BATCH).map((ch) => {
-    const batch = getFirebase().firestore().batch()
+    const batch = writeBatch(firestore)
     ch.forEach(({ coll, docId }) => {
-      const ref = colls[coll].doc(docId)
+      const ref = doc(collections[coll], docId)
       batch.delete(ref)
     })
 
@@ -146,11 +150,13 @@ export const removeFromFirebase =
   }
 
 const setRepeatingTxsAsInactive = (inactive: Transaction[]) => {
-  const txs = getFirebase().firestore().collection('transactions')
+  const firestore = getFirestore()
+  const txs = collection(firestore, 'transactions')
+
   return chunk(inactive, MAX_WRITES_IN_BATCH).map((c) => {
-    const batch = getFirebase().firestore().batch()
+    const batch = writeBatch(firestore)
     c.forEach((tx) => {
-      const ref = txs.doc(tx.id)
+      const ref = doc(txs, tx.id)
       batch.update(ref, { repeating: 'inactive' } as Partial<Transaction>)
     })
 

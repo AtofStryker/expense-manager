@@ -1,21 +1,19 @@
 import { isBefore, parse, format } from 'date-fns'
+import { getStorage, listAll, ref } from 'firebase/storage'
 
-import { getStorageRef } from '../firebase/firebase'
-import { downloadFiles, firestoreFileContent } from '../firebase/firestore'
+import { downloadFiles, firestoreFileContent, formatStoragePath } from '../firebase/firestore'
 import { REQUEST_TIMEOUT_ERROR } from '../shared/constants'
 import { delay } from '../shared/utils'
 
 export const AUTO_BACKUP_PERIOD_DAYS = 7
 export const BACKUP_FILENAME_FORMAT = 'dd.MM.yyyy - HH:mm:ss'
 
-export const listBackupFilesForUser = (userId: string) => {
-  const listFilesPromise = getStorageRef(userId, 'backup')
-    .listAll()
-    .then(function (res) {
-      return res.items.map((itemRef) => {
-        return itemRef.name
-      })
+export const listBackupFilesForUser = async (userId: string) => {
+  const listFilesPromise = listAll(ref(getStorage(), formatStoragePath(userId, 'backup'))).then(function (res) {
+    return res.items.map((itemRef) => {
+      return itemRef.name
     })
+  })
 
   return Promise.all([
     Promise.race([listFilesPromise, delay(5 * 1000)]), // max wait time is 5s

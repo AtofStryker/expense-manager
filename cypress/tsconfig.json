@@ -1,6 +1,8 @@
 {
   "include": [".eslintrc.js", "./**/*.ts"],
   "compilerOptions": {
+    "moduleResolution": "node",
+    "esModuleInterop": true,
     "target": "es6",
     "lib": ["es5", "dom"],
     "types": ["cypress", "node", "@testing-library/cypress"]

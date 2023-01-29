@@ -65,15 +65,28 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 7.18.1
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
       - name: Create .env-dev
         env:
           ENV_SECRETS: ${{ secrets.ENV_SECRETS }}
-        # This seems to be the easiest way: https://stackoverflow.com/a/64452700/7227455
+        # Encrypted secrets can't be used by application, the following is a workaround. See:
+        # - https://stackoverflow.com/a/64452700/7227455
+        # - https://stackoverflow.com/a/67998780
+        #
+        # To decode a file when updating on Github, do: `base64 -i <path_to_.env_dev>`
         run: echo $ENV_SECRETS | base64 -d > .env-dev
       - name: Create serviceAccount.json
         env:
           SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
-        # This seems to be the easiest way: https://stackoverflow.com/a/64452700/7227455
+        # Encrypted secrets can't be used by application, the following is a workaround. See:
+        # - https://stackoverflow.com/a/64452700/7227455
+        # - https://stackoverflow.com/a/67998780
+        #
+        # To decode a file when updating on Github, do: `base64 -i <path_to_service_account.json>`
         run: echo $SERVICE_ACCOUNT | base64 -d > serviceAccount.json
       - name: Run cypress tests
         uses: cypress-io/github-action@v4
@@ -83,6 +96,9 @@ jobs:
           wait-on: 'http://localhost:3000'
           # Unfortunately, videos do not work on the default GitHub actions runner. See:
           # https://github.com/cypress-io/cypress/issues/19488
+          #
+          # We still want to record the tests to Cypress dashboard as it allows for easier
+          # debugging of test output and offers additional features for free.
           record: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}

@@ -1,3 +1,5 @@
+import { User } from 'firebase/auth'
+
 import { DEFAULT_CURRENCY, Currency } from '../shared/currencies'
 import { FirebaseField } from '../types'
 
@@ -21,7 +23,7 @@ export interface Profile extends FirebaseField {
   exchangeRates: ExchangeRates
 }
 
-export const getInitialState = (user: firebase.User): Profile => ({
+export const getInitialState = (user: User): Profile => ({
   uid: user.uid,
   id: user.uid,
   settings: {

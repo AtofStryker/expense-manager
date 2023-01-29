@@ -38,6 +38,7 @@ export const Loading: React.FC<LoadingProps> = ({ cssOverrides, text, size }) =>
     <>
       <Image
         src="/static/coin.svg"
+        priority
         width={size}
         height={size}
         alt="rotating coin loading image"

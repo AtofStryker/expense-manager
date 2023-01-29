@@ -1,4 +1,5 @@
 import { AlertColor as NotificationSeverity } from '@mui/material'
+import { User } from 'firebase/auth'
 
 import { Tag, Transaction } from './addTransaction/state'
 import { Profile } from './profile/state'
@@ -70,7 +71,7 @@ export interface State extends SerializableState {
   currentScreen: ScreenTitle
   transactionSearch: TransactionSearch
   cursor: number
-  user: firebase.User | null
+  user: User | null
   notification: NotificationState | null
   confirmDeleteTxForTxId: string | null
   overview: OverviewState

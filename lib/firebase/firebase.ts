@@ -1,10 +1,7 @@
-// Firebase App (the core Firebase SDK) is always required and must be listed before other firebase imports
-import firebase from 'firebase/app'
+import { initializeApp, getApp, getApps } from 'firebase/app'
+import { getAuth as getAuthFromFirebase } from 'firebase/auth'
+import { getFirestore, enableMultiTabIndexedDbPersistence } from 'firebase/firestore'
 import { Store } from 'redux'
-// NOTE: Import all Firebase products that the project uses
-import 'firebase/auth'
-import 'firebase/firestore'
-import 'firebase/storage'
 
 import { createErrorNotification, setSnackbarNotification } from '../shared/actions'
 
@@ -20,58 +17,43 @@ const firebaseConfig = {
 }
 
 export const initializeFirebase = async (store: Store) => {
-  // firebase can be initialized only once, so this crashes on hot-reload update
-  const shouldInitialize = !firebase.apps.length
-  if (shouldInitialize) firebase.initializeApp(firebaseConfig)
+  // firebase can be initialized only once but this is called repeatedly after hot-reload
+  // See: https://stackoverflow.com/a/67144062
+  if (getApps().length > 0) return getApp()
+  const firebaseApp = initializeApp(firebaseConfig)
 
-  let persistedUser = firebase.auth().currentUser
+  // persistance only works in browsers
+  if (typeof window !== 'undefined') {
+    await enableMultiTabIndexedDbPersistence(getFirestore()).catch((err) => {
+      if (err.code === 'failed-precondition') {
+        // Multiple tabs open, persistence can only be enabled
+        // in one tab at a a time.
+        store.dispatch(
+          setSnackbarNotification(
+            createErrorNotification('Expense manager is opened on mutliple tabs. Local persistance is disabled!')
+          )
+        )
+      } else if (err.code === 'unimplemented') {
+        // The current browser does not support all of the
+        // features required to enable persistence
+        store.dispatch(
+          setSnackbarNotification(createErrorNotification('Underlying platform (browser) does not support persistance'))
+        )
+      }
+    })
+  }
+
+  let persistedUser = getAuthFromFirebase().currentUser
   if (persistedUser) {
     store.dispatch(authChangeAction(persistedUser ? 'loggedIn' : 'loggedOut', persistedUser) as any)
   }
 
-  firebase.auth().onAuthStateChanged((user) => {
+  getAuthFromFirebase().onAuthStateChanged((user) => {
     if (persistedUser) persistedUser = null
     else {
       store.dispatch(authChangeAction(user ? 'loggedIn' : 'loggedOut', user) as any)
     }
   })
 
-  // persistance only works in browsers
-  if (shouldInitialize && typeof window !== 'undefined') {
-    await firebase
-      .firestore()
-      .enablePersistence({ synchronizeTabs: true })
-      .catch((err) => {
-        if (err.code === 'failed-precondition') {
-          // Multiple tabs open, persistence can only be enabled
-          // in one tab at a a time.
-          store.dispatch(
-            setSnackbarNotification(
-              createErrorNotification('Expense manager is opened on mutliple tabs. Local persistance is disabled!')
-            )
-          )
-        } else if (err.code === 'unimplemented') {
-          // The current browser does not support all of the
-          // features required to enable persistence
-          store.dispatch(
-            setSnackbarNotification(
-              createErrorNotification('Underlying platform (browser) does not support persistance')
-            )
-          )
-        }
-      })
-  }
-}
-
-export const getFirebase = () => {
-  return firebase
-}
-
-export const getStorageRef = (...path: string[]) => {
-  let ref = getFirebase().storage().ref()
-  path.forEach((p) => {
-    ref = ref.child(p)
-  })
-
-  return ref
+  return firebaseApp
 }

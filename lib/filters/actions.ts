@@ -1,7 +1,7 @@
 import { set } from '@siegrift/tsfunct'
+import { getStorage, ref, uploadString } from 'firebase/storage'
 
-import { getStorageRef } from '../firebase/firebase'
-import { removeFiles } from '../firebase/firestore'
+import { formatStoragePath, removeFiles } from '../firebase/firestore'
 import { Action, Thunk } from '../redux/types'
 import { createSuccessNotification, setSnackbarNotification, withErrorHandler } from '../shared/actions'
 import { UPLOADING_DATA_ERROR } from '../shared/constants'
@@ -14,7 +14,7 @@ export const uploadFilter =
     const userId = currentUserIdSel(getState())
 
     return withErrorHandler(UPLOADING_DATA_ERROR, dispatch, async () => {
-      await getStorageRef(userId!, 'filters', filename).putString(code)
+      uploadString(ref(getStorage(), formatStoragePath(userId!, 'filters', filename)), code)
       dispatch(setSnackbarNotification(createSuccessNotification('Filter successfully created')))
     })
   }

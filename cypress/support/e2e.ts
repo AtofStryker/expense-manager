@@ -2,10 +2,11 @@ import '@testing-library/cypress/add-commands'
 import 'cypress-plugin-tab'
 import './commands'
 import { attachCustomCommands } from 'cypress-firebase'
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/firestore'
-import 'firebase/storage'
+// Plugin cypress-firebase expects pre v9 instance, so we need to use compat version
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import 'firebase/compat/database'
+import 'firebase/compat/firestore'
 
 before('Initialize firebase and cypress-firebase', () => {
   cy.task('parseConfiguration').then((config: any) => {

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { css } from '@emotion/react'
 import LogoutIcon from '@mui/icons-material/ExitToApp'
 import { Alert, Theme, Typography, Button } from '@mui/material'
+import { getAuth } from 'firebase/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from 'tss-react/mui'
 
@@ -10,7 +11,6 @@ import ConfirmDialog from '../components/confirmDialog'
 import CurrencySelect from '../components/currencySelect'
 import Loading from '../components/loading'
 import PageWrapper from '../components/pageWrapper'
-import { getFirebase } from '../firebase/firebase'
 import { settingsSel, signInStatusSel, transactionsSel } from '../shared/selectors'
 
 import {
@@ -181,7 +181,7 @@ const Profile = () => {
         variant="contained"
         color="secondary"
         onClick={() => {
-          getFirebase().auth().signOut()
+          getAuth().signOut()
         }}
         aria-label="sign out"
         className={classes.signOutButton}

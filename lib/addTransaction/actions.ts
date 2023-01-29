@@ -1,8 +1,9 @@
 import { pick } from '@siegrift/tsfunct'
+import { getStorage, ref, uploadBytesResumable } from 'firebase/storage'
 import { v4 as uuid } from 'uuid'
 
 import { uploadToFirebase } from '../actions'
-import { getStorageRef } from '../firebase/firebase'
+import { formatStoragePath } from '../firebase/firestore'
 import { Thunk } from '../redux/types'
 import {
   createErrorNotification,
@@ -34,10 +35,10 @@ export const addTransaction =
     } else {
       const id = uuid()
 
-      const storageRef = getStorageRef(userId, 'files', id)
+      const storage = getStorage()
       const fileUploads = addTx.attachedFileObjects.map(async ({ file }) =>
         // TODO: handle duplicate filenames
-        storageRef.child(file.name).put(file)
+        uploadBytesResumable(ref(storage, formatStoragePath(userId, 'files', id, file.name)), file)
       )
 
       const tx: Transaction = {
