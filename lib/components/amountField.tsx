@@ -45,7 +45,8 @@ const MuiInput: React.FC<MuiInputProps> = ({ clearAmount, openCalculator, transa
   return (
     <Input
       {...others}
-      inputProps={{ inputMode: 'numeric' }}
+      // We don't want the input mode to be "numeric" because it does not support fractional units
+      inputProps={{ inputMode: 'decimal' }}
       id={amountFieldId}
       value={value}
       startAdornment={
