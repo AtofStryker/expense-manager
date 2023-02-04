@@ -44,12 +44,6 @@ const useStyles = makeStyles()({
     width: '100%',
     position: 'fixed',
     bottom: 0,
-    // Testing this on iOS simulator didn't work and `env(safe-area-inset-bottom)` was always 0. This might be a
-    // limitation of the simulator/Safari. See:
-    // https://stackoverflow.com/questions/72960902/envsafe-area-inset-bottom-not-working-in-css
-    //
-    // TODO: Remove this code if it doesn't work on real device or update the comment.
-    paddingBottom: 'env(safe-area-inset-bottom)',
   },
   drawer: {
     width: DRAWER_WIDTH,
