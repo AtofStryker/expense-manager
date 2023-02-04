@@ -52,17 +52,16 @@ const ExpenseManagerApp = (props: ExpenseManagerAppProps) => {
             <meta charSet="utf-8" />
             {/* Use minimum-scale=1 to enable GPU rasterization */}
             <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no" />
-            {/* PWA primary color */}
+
+            {/* https://vite-pwa-org.netlify.app/guide/pwa-minimal-requirements.html#icons-images */}
+            <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png" />
             <meta name="theme-color" content="#a5790a" />
-            {/* Page favicon */}
-            <link rel="icon" type="image/png" href="../static/coin.png" />
-            {/* Progressive Web App: Match the width of app’s content with width of viewport for mobile devices */}
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            {/* Progressive Web App: Provide manifest file for metadata */}
+            <link rel="icon" type="image/png" href="/static/coin.png" />
             <link rel="manifest" href="/static/manifest.json" />
+
             {/* SEO: App description for search-engine optimization */}
             <meta name="Description" content={PROJECT_DESCRIPTION} />
-            {/* Bonus: Have app icon and splash screen for PWAs saved to homescreen on iOS devices */}
+            {/* Have app icon and splash screen for PWAs saved to homescreen on iOS devices */}
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-status-bar-style" content="black" />
             {/* https://web.dev/uses-rel-preconnect/?utm_source=lighthouse&utm_medium=node#improve-page-load-speed-with-preconnect */}
