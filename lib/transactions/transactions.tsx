@@ -59,42 +59,40 @@ const Transactions = () => {
         <TransactionList transactions={transactions} />
       </Paper>
 
-      {true && (
-        <ConfirmDialog
-          ContentComponent={
-            <>
-              <p>Do you really want to remove the following transaction?</p>
+      <ConfirmDialog
+        ContentComponent={
+          <>
+            <p>Do you really want to remove the following transaction?</p>
+            <div
+              css={css`
+                background-color: ${BACKGROUND_COLOR};
+              `}
+            >
               <div
                 css={css`
-                  background-color: ${BACKGROUND_COLOR};
+                  transform: scale(0.7);
+                  background-color: white;
+                  padding: 16px;
+                  border-radius: 8px;
                 `}
               >
-                <div
-                  css={css`
-                    transform: scale(0.7);
-                    background-color: white;
-                    padding: 16px;
-                    border-radius: 8px;
-                  `}
-                >
-                  <TransactionContent tx={confirmDeleteDialogForTx!} bigDevice={true} />
-                </div>
+                <TransactionContent tx={confirmDeleteDialogForTx!} bigDevice={true} />
               </div>
-              <i>
-                <b>This action can't be undone!</b>
-              </i>
-            </>
-          }
-          open={confirmDeleteDialogForTx !== null}
-          onCancel={() => dispatch(setConfirmTxDeleteDialogOpen(null))}
-          onConfirm={(e) => {
-            e.stopPropagation()
+            </div>
+            <i>
+              <b>This action can't be undone!</b>
+            </i>
+          </>
+        }
+        open={confirmDeleteDialogForTx !== null}
+        onCancel={() => dispatch(setConfirmTxDeleteDialogOpen(null))}
+        onConfirm={(e) => {
+          e.stopPropagation()
 
-            dispatch(setConfirmTxDeleteDialogOpen(null))
-            dispatch(removeTx(confirmDeleteDialogForTx!.id))
-          }}
-        />
-      )}
+          dispatch(setConfirmTxDeleteDialogOpen(null))
+          dispatch(removeTx(confirmDeleteDialogForTx!.id))
+        }}
+      />
     </PageWrapper>
   )
 }

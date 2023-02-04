@@ -1,9 +1,7 @@
 import { useState } from 'react'
 
 import { css } from '@emotion/react'
-import LogoutIcon from '@mui/icons-material/ExitToApp'
 import { Alert, Theme, Typography, Button } from '@mui/material'
-import { getAuth } from 'firebase/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from 'tss-react/mui'
 
@@ -176,19 +174,6 @@ const Profile = () => {
           Clear all expense manager data
         </Button>
       </SettingsPanel>
-
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => {
-          getAuth().signOut()
-        }}
-        aria-label="sign out"
-        className={classes.signOutButton}
-        startIcon={<LogoutIcon />}
-      >
-        Sign out
-      </Button>
 
       <ConfirmDialog
         open={deleteAllDataDialogOpen}

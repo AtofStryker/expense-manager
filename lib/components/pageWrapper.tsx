@@ -2,9 +2,8 @@ import { Alert, Grid, Snackbar, Theme } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from 'tss-react/mui'
 
-import Navigation, { DRAWER_WIDTH } from '../components/navigation'
+import Navigation from '../components/navigation'
 import { setSnackbarNotification } from '../shared/actions'
-import { useIsVeryBigDevice } from '../shared/hooks'
 import { snackbarNotificationSel, signInStatusSel } from '../shared/selectors'
 import { redirectTo } from '../shared/utils'
 
@@ -13,10 +12,6 @@ import { LoadingOverlay } from './loading'
 
 const useStyles = makeStyles()((theme: Theme) => ({
   root: {
-    height: 'calc(100vh - 56px)',
-    ['@media (max-height:500px)']: {
-      height: 'calc(100vh)',
-    },
     padding: theme.spacing(2),
     overflow: 'auto',
     overflowX: 'hidden',
@@ -24,13 +19,14 @@ const useStyles = makeStyles()((theme: Theme) => ({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     flexDirection: 'column',
-  },
-  veryBigDeviceRoot: {
-    height: '100%',
-    left: `${DRAWER_WIDTH}px`,
-    margin: 'auto',
-    width: `calc(100% - ${DRAWER_WIDTH}px)`,
-    position: 'absolute',
+    maxWidth: 1024,
+    margin: '0 auto',
+    // We set explicit height here because so child components have fixed height to render. This is important especially
+    // for virtualized lists.
+    height: 'calc(100vh - 64px)',
+    [theme.breakpoints.down('sm')]: {
+      height: 'calc(100vh - 48px)',
+    },
   },
 }))
 
@@ -42,12 +38,12 @@ const PageWrapper = ({ children }: PageWrapperProps) => {
   const { classes, cx } = useStyles()
   const notification = useSelector(snackbarNotificationSel)
   const signInStatus = useSelector(signInStatusSel)
-  const veryBigDevice = useIsVeryBigDevice()
   const dispatch = useDispatch()
 
   return (
     <>
-      <Grid container className={cx(classes.root, veryBigDevice && classes.veryBigDeviceRoot)}>
+      <Navigation />
+      <Grid container className={cx(classes.root)}>
         {children}
         {notification && (
           <Snackbar
@@ -75,7 +71,6 @@ const PageWrapper = ({ children }: PageWrapperProps) => {
         />
       )}
       {(signInStatus === 'loggingIn' || signInStatus === 'unknown') && <LoadingOverlay />}
-      <Navigation />
     </>
   )
 }
