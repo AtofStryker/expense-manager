@@ -17,7 +17,9 @@ describe('Add transaction', () => {
     cy.focused().type('New TV')
     cy.focused().type('{enter}')
 
-    cy.findByText(/transactions/i).click()
+    cy.findByText(/transactions/i, { selector: 'button' })
+      .filter(':visible')
+      .click()
     cy.dataCy('transaction').should('have.length', 2)
   })
 })

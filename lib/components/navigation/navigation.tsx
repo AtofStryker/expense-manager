@@ -111,7 +111,7 @@ function Navigation() {
             <Tooltip title="Open settings">
               <IconButton onClick={onOpenUserMenu} sx={{ p: 0 }}>
                 {/* TODO: allow specifying avatar, load default from logged in account */}
-                <Avatar alt="account avatar" />
+                <Avatar alt="account avatar" sx={{ width: { xs: 30, md: 40 }, height: { xs: 30, md: 40 } }} />
               </IconButton>
             </Tooltip>
             <Menu
